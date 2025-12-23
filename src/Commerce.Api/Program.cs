@@ -1,8 +1,18 @@
 using Commerce.Application.Interfaces;
-using Commerce.Infrastructure.Services;
+using Commerce.Application.Services;
+using Commerce.Infrastructure.Repositories;
+using Commerce.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
-// Register ProductService for IProductService
+
 builder.Services.AddScoped<IProductService, ProductService>();
+
+
+builder.Services.AddDbContext<CommerceDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("CommerceDb")));
+builder.Services.AddScoped<IProductRepository, EfProductRepository>();
+builder.Services.AddApiVersioning();
 // Add controllers
 builder.Services.AddControllers();
 

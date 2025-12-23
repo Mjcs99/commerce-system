@@ -122,7 +122,7 @@ All product data is stored as a snapshot to preserve historical accuracy.
 
 ---
 
-## Payment (Optional but Recommended)
+## Payment 
 
 Represents the payment lifecycle independently from the order lifecycle.
 

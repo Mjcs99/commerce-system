@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Commerce.Api.Controllers;
 
 [ApiController]
-[Route("api/products")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/products")]
 public class ProductsController : ControllerBase
 {
     private readonly IProductService _productService;
@@ -26,6 +27,12 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<ProductDto>> GetProductByIdAsync(Guid id)
     {
         var product = await _productService.GetProductByIdAsync(id);
+        return product is null ? NotFound() : Ok(product);
+    }
+    [HttpGet("by-sku/{sku}")]
+    public async Task<ActionResult<ProductDto>> GetProductBySkuAsync(string sku)
+    {
+        var product = await _productService.GetProductBySkuAsync(sku);
         return product is null ? NotFound() : Ok(product);
     }
 }
