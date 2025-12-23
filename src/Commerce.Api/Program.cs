@@ -1,19 +1,18 @@
-using Commerce.Application.Interfaces;
 using Commerce.Application.Services;
-using Commerce.Infrastructure.Repositories;
 using Commerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Commerce.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IProductService, ProductService>();
-
+builder.Services.AddInfrastructureServices()
+                .AddApplicationServices();
 
 builder.Services.AddDbContext<CommerceDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("CommerceDb")));
-builder.Services.AddScoped<IProductRepository, EfProductRepository>();
+
 builder.Services.AddApiVersioning();
-// Add controllers
+
 builder.Services.AddControllers();
 
 // Swagger UI via Swashbuckle
