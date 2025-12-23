@@ -1,4 +1,4 @@
-using Commerce.Application.DTOs;
+using Commerce.Contracts.Products;
 
 namespace Commerce.Application.Interfaces;
 

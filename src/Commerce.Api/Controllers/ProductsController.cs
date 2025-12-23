@@ -1,4 +1,4 @@
-using Commerce.Application.DTOs;
+using Commerce.Contracts.Products;
 using Commerce.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

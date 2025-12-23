@@ -1,0 +1,24 @@
+﻿@page
+@model Commerce.Web.Pages.Products.IndexModel
+
+<h1>Products</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>SKU</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var p in Model.Products)
+    {
+        <tr>
+            <td>@p.Name</td>
+            <td>@p.Sku</td>
+            <td>@p.PriceAmount @p.Currency</td>
+        </tr>
+    }
+    </tbody>
+</table>

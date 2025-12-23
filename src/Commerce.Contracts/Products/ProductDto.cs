@@ -1,4 +1,4 @@
-namespace Commerce.Application.DTOs;
+namespace Commerce.Contracts.Products;
 
 public record ProductDto(
     Guid ProductId,

@@ -35,6 +35,7 @@ Thumbs.db
 
 appsettings.Local.json
 appsettings.*.Secrets.json
+.env
 
 ####################################
 # Rider / VS Code
