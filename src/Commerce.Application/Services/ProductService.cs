@@ -1,6 +1,7 @@
-using Commerce.Contracts.Products;
+using Commerce.Application.Products.Results;
 using Commerce.Application.Interfaces;
 using Commerce.Domain.Entities;
+using Commerce.Application.Products.Queries;
 
 namespace Commerce.Application.Services;
 
@@ -13,22 +14,22 @@ public class ProductService : IProductService
         _repo = repo;
     }
 
-    public async Task<IReadOnlyList<ProductDto>> GetAllProductsAsync()
+    public async Task<IReadOnlyList<ProductResult>> GetProductsAsync(GetProductsQuery query)
     {
-        var products = await _repo.GetAllProductsAsync();
+        var products = await _repo.GetPagedAsync(query.Page, query.PageSize);
         return products.Select(Map).ToList();
     }
 
-    public async Task<ProductDto?> GetProductByIdAsync(Guid productId)
+    public async Task<ProductResult?> GetProductByIdAsync(Guid productId)
     {
         var product = await _repo.GetProductByIdAsync(productId);
         return product is null ? null : Map(product);
     }
 
-    private static ProductDto Map(Product p)
-        => new(p.Id, p.Sku, p.Name, p.PriceAmount, p.Currency);
+    private static ProductResult Map(Product p)
+        => new(p.Id, p.Name, p.Sku, p.PriceAmount);
 
-    public async Task<ProductDto?> GetProductBySkuAsync(string sku)
+    public async Task<ProductResult?> GetProductBySkuAsync(string sku)
     {
         if (string.IsNullOrWhiteSpace(sku)) return null; 
         var product = await _repo.GetProductBySkuAsync(sku);

@@ -6,15 +6,14 @@ public class Product
     public string Sku { get; }
     public string Name { get; }
     public decimal PriceAmount { get; }
-    public string Currency { get; }
 
-    public Product(Guid id, string sku, string name, decimal priceAmount, string currency)
+
+    public Product(Guid id, string sku, string name, decimal priceAmount)
     {
         if (priceAmount < 0) throw new ArgumentOutOfRangeException(nameof(priceAmount));
         Id = id;
         Sku = sku;
         Name = name;
         PriceAmount = priceAmount;
-        Currency = currency;
     }
 }

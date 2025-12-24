@@ -14,9 +14,11 @@ public class EfProductRepository : IProductRepository
         _db = db;
     }
 
-    public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
+    public async Task<IReadOnlyList<Product>> GetPagedAsync(int page, int pageSize)
         => await _db.Products
             .AsNoTracking()
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
     public async Task<Product?> GetProductByIdAsync(Guid id)

@@ -19,7 +19,6 @@ public class CommerceDbContext : DbContext
 
             b.Property(p => p.Name).IsRequired().HasMaxLength(200);
             b.Property(p => p.PriceAmount).IsRequired();
-            b.Property(p => p.Currency).IsRequired().HasMaxLength(3);
         });
 
         
