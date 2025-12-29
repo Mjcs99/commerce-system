@@ -1,4 +1,5 @@
 using Commerce.Contracts.Products;
+using Commerce.Contracts.Common;
 using Commerce.Application.Interfaces;
 using Commerce.Application.Products.Queries;
 using Microsoft.AspNetCore.Mvc;
@@ -18,23 +19,34 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProductsAsync(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+    public async Task<ActionResult<PagedResult<ProductDto>>> GetAllProductsAsync(
+        [FromQuery] string? searchTerm,
+        [FromQuery] int page = 1
+        )
     {
-        var results = await _productService.GetProductsAsync(
-            new GetProductsQuery(page, pageSize)
-        );
+        const int pageSize = 20;
+        var result = await _productService.GetProductsAsync(
+            new GetProductsQuery(
+                string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm.Trim(),
+                Math.Max(page, 1),
+                pageSize
+            ));
 
-        var dtos = results.Select(r => new ProductDto(
-            r.Id,
-            r.Name,
-            r.Sku,
-            r.Price
+        var dtos = result.Items.Select(p => new ProductDto(
+            p.Id,
+            p.Name,
+            p.Sku,
+            p.Price
+        )).ToList();
+
+        return Ok(new PagedResult<ProductDto>(
+            dtos,
+            page,
+            result.TotalCount,
+            pageSize
         ));
-
-        return Ok(dtos);
     }
+
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ProductDto>> GetProductByIdAsync(Guid id)

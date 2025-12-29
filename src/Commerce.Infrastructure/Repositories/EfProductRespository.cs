@@ -14,13 +14,28 @@ public class EfProductRepository : IProductRepository
         _db = db;
     }
 
-    public async Task<IReadOnlyList<Product>> GetPagedAsync(int page, int pageSize)
-        => await _db.Products
-            .AsNoTracking()
+    public async Task<(IReadOnlyList<Product>, int)> GetPagedAsync(string? searchTerm, int page, int pageSize)
+    {
+        var query = _db.Products.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            query = query.Where(p => p.Name.Contains(searchTerm.ToLower()) || p.Sku.Contains(searchTerm.ToLower()));
+        }
+
+        query = query.OrderBy(p => p.Name).ThenBy(p => p.Id);
+
+        var totalCount = await query.CountAsync();
+        page = Math.Max(page, 1);
+        pageSize = Math.Clamp(pageSize, 1, 200);
+        var items = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
-
+        
+        return (items, totalCount);
+    }
+       
     public async Task<Product?> GetProductByIdAsync(Guid id)
         => await _db.Products
             .AsNoTracking()

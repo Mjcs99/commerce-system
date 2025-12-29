@@ -2,6 +2,7 @@ using Commerce.Application.Products.Results;
 using Commerce.Application.Interfaces;
 using Commerce.Domain.Entities;
 using Commerce.Application.Products.Queries;
+using Commerce.Application.Common;
 
 namespace Commerce.Application.Services;
 
@@ -14,10 +15,10 @@ public class ProductService : IProductService
         _repo = repo;
     }
 
-    public async Task<IReadOnlyList<ProductResult>> GetProductsAsync(GetProductsQuery query)
+    public async Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query)
     {
-        var products = await _repo.GetPagedAsync(query.Page, query.PageSize);
-        return products.Select(Map).ToList();
+        var (products, totalCount) = await _repo.GetPagedAsync(query.SearchTerm, query.Page, query.PageSize);
+        return new PagedQueryResult<ProductResult>(products.Select(Map).ToList(), totalCount);
     }
 
     public async Task<ProductResult?> GetProductByIdAsync(Guid productId)

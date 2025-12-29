@@ -1,3 +1,5 @@
+using System.Net.Http.Json;
+using Commerce.Contracts.Common;
 using Commerce.Contracts.Products;
 
 namespace Commerce.Web.Clients;
@@ -6,23 +8,26 @@ public class ProductApiClient : IProductApiClient
 {
     private readonly HttpClient _http;
 
-    public ProductApiClient(HttpClient http)
-    {
-        _http = http;
-    }
+    public ProductApiClient(HttpClient http) => _http = http;
 
-    public async Task<IReadOnlyList<ProductDto>> GetAllAsync()
-    {
-        var products =
-            await _http.GetFromJsonAsync<IReadOnlyList<ProductDto>>(
-                "/api/v1/products");
-
-        return products ?? [];
-    }
+ 
 
     public async Task<ProductDto?> GetByIdAsync(Guid id)
+        => await _http.GetFromJsonAsync<ProductDto>($"/api/v1/products/{id}");
+
+    public async Task<PagedResult<ProductDto>> GetPageAsync(int page, string? searchTerm = null)
     {
-        return await _http.GetFromJsonAsync<ProductDto>(
-            $"/api/v1/products/{id}");
+        const int pageSize = 20;
+
+        var q = string.IsNullOrWhiteSpace(searchTerm)
+            ? ""
+            : $"&searchTerm={Uri.EscapeDataString(searchTerm)}";
+
+        var url = $"/api/v1/products?page={page}&pageSize={pageSize}{q}";
+
+        return await _http.GetFromJsonAsync<PagedResult<ProductDto>>(url)
+            ?? new PagedResult<ProductDto>(Array.Empty<ProductDto>(), page, 0, pageSize);
     }
+
 }
+
