@@ -3,6 +3,7 @@ using Commerce.Contracts.Common;
 using Commerce.Application.Interfaces;
 using Commerce.Application.Products.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Commerce.Api.Controllers;
 

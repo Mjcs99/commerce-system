@@ -4,5 +4,6 @@ public sealed record ProductResult(
     Guid Id,
     string Name,
     string Sku,
-    decimal Price
+    decimal Price,
+    string? ImageUrl = null
 );

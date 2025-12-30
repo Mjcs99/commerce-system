@@ -14,6 +14,12 @@ public class EfProductRepository : IProductRepository
         _db = db;
     }
 
+    public Task CreateAsync(Product product)
+    {
+        _db.Products.Add(product);
+        return Task.CompletedTask;
+    }
+
     public async Task<(IReadOnlyList<Product>, int)> GetPagedAsync(string? searchTerm, int page, int pageSize)
     {
         var query = _db.Products.AsNoTracking();
@@ -35,7 +41,9 @@ public class EfProductRepository : IProductRepository
         
         return (items, totalCount);
     }
-       
+
+
+
     public async Task<Product?> GetProductByIdAsync(Guid id)
         => await _db.Products
             .AsNoTracking()

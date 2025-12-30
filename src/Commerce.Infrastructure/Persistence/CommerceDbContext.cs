@@ -16,7 +16,6 @@ public class CommerceDbContext : DbContext
             b.HasKey(p => p.Id);
             b.Property(p => p.Sku).IsRequired().HasMaxLength(64);
             b.HasIndex(p => p.Sku).IsUnique();
-
             b.Property(p => p.Name).IsRequired().HasMaxLength(200);
             b.Property(p => p.PriceAmount).IsRequired();
         });

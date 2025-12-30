@@ -5,7 +5,7 @@ using Commerce.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddInfrastructureServices()
+builder.Services.AddInfrastructureServices(builder.Configuration)
                 .AddApplicationServices();
 
 builder.Services.AddDbContext<CommerceDbContext>(options =>
