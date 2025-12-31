@@ -11,13 +11,13 @@ public sealed class AzureBlobProductImageUriBuilder : IProductImageUriBuilder
         _options = options.Value;
     }
 
-    public string BuildUri(string? primaryImageBlobName)
+    public string BuildUri(string? productId)
     {
-        if (string.IsNullOrEmpty(primaryImageBlobName))
+        if (string.IsNullOrEmpty(productId))
         {
             return string.Empty;
         }
 
-        return $"https://{_options.AccountName}.blob.core.windows.net/{_options.ContainerName}/{primaryImageBlobName}";
+        return $"https://{_options.AccountName}.blob.core.windows.net/{_options.ContainerName}/{productId}/images";
     }
 }

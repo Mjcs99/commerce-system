@@ -37,7 +37,8 @@ public class ProductsController : ControllerBase
             p.Id,
             p.Name,
             p.Sku,
-            p.Price
+            p.Price,
+            p.ImageUrl
         )).ToList();
 
         return Ok(new PagedResult<ProductDto>(
@@ -49,8 +50,8 @@ public class ProductsController : ControllerBase
     }
 
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ProductDto>> GetProductByIdAsync(Guid id)
+    [HttpGet("{id:guid}", Name = "GetProductById")]
+    public async Task<ActionResult<ProductDto>> GetProductByIdAsync([FromRoute] Guid id)
     {
         var product = await _productService.GetProductByIdAsync(id);
         return product is null ? NotFound() : Ok(product);

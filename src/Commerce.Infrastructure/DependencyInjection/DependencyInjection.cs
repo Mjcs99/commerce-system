@@ -6,7 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Commerce.Infrastructure.Images;
 using Commerce.Application.Images;
 using Commerce.Infrastructure.Options;
-
+using Commerce.Application.Interfaces.Out;
+using Commerce.Infrastructure.Storage;
 
 public static class DependencyInjection
 {
@@ -19,7 +20,7 @@ public static class DependencyInjection
         {
             configuration.GetSection("BlobStorage").Bind(options);
         });
-        
+        services.AddScoped<IBlobStorage, AzureBlobStorage>();
         services.AddSingleton<IProductImageUriBuilder, AzureBlobProductImageUriBuilder>();
 
         return services;

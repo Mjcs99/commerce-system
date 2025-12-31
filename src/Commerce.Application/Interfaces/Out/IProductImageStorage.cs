@@ -1,13 +1,14 @@
-namespace Commerce.Application.Interfaces;
+namespace Commerce.Application.Interfaces.Out;
 
-public interface IProductImageStorage
+public interface IBlobStorage
 {
-    Task<string> UploadAsync(
-        Guid productId,
+    Task<BlobUploadResult> UploadAsync(
+        string blobName,
         Stream content,
         string contentType,
-        string fileExtension,
-        bool isPrimary,
-        CancellationToken ct);
-        string GetUrl(string blobName);
+        CancellationToken ct = default);
+
+    Task DeleteIfExistsAsync(string blobName, CancellationToken ct = default);
 }
+
+public sealed record BlobUploadResult(string Url);

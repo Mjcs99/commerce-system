@@ -8,8 +8,9 @@ public static class SeedData
 {
     public static async Task SeedProductsAsync(CommerceDbContext db, int count = 3)
     {
-        db.Products.RemoveRange(db.Products);
-        await db.SaveChangesAsync();
+
+        //db.Products.RemoveRange(db.Products);
+        //await db.SaveChangesAsync();
         // Safety: don't reseed if products already exist
         if (await db.Products.AnyAsync())
             return;

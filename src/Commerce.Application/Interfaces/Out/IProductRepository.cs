@@ -7,5 +7,5 @@ public interface IProductRepository
     Task<(IReadOnlyList<Product>, int TotalCount)> GetPagedAsync(string? searchTerm, int page, int pageSize);
     Task<Product?> GetProductByIdAsync(Guid id);
     Task<Product?> GetProductBySkuAsync(string sku);
-    Task CreateAsync(Product product);
+    Task<Guid> CreateAsync(Product product);
 }

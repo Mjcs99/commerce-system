@@ -14,10 +14,11 @@ public class EfProductRepository : IProductRepository
         _db = db;
     }
 
-    public Task CreateAsync(Product product)
+    public async Task<Guid> CreateAsync(Product product)
     {
         _db.Products.Add(product);
-        return Task.CompletedTask;
+        await _db.SaveChangesAsync();
+        return product.Id;
     }
 
     public async Task<(IReadOnlyList<Product>, int)> GetPagedAsync(string? searchTerm, int page, int pageSize)

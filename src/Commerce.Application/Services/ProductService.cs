@@ -5,17 +5,21 @@ using Commerce.Application.Products.Queries;
 using Commerce.Application.Products.Commands;
 using Commerce.Application.Common;
 using Commerce.Application.Images;
+using Commerce.Application.Interfaces.Out;
+
 namespace Commerce.Application.Services;
 
 public class ProductService : IProductService
 {
     private readonly IProductRepository _repo;
     private readonly IProductImageUriBuilder _imageUriBuilder;
+    private readonly IBlobStorage _blobStorage;
 
-    public ProductService(IProductRepository repo, IProductImageUriBuilder imageUriBuilder)
+    public ProductService(IProductRepository repo, IProductImageUriBuilder imageUriBuilder, IBlobStorage blobStorage)
     {
         _repo = repo;
         _imageUriBuilder = imageUriBuilder;
+        _blobStorage = blobStorage;
     }
 
     public async Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query)
@@ -45,7 +49,40 @@ public class ProductService : IProductService
     {
         var product = new Product(Guid.NewGuid(), command.Name, command.Sku, command.Price);
         await _repo.CreateAsync(product);
-        // await _repo.addImagesAsync(product.Id, command.ImageData);
         return product.Id;
+    }
+
+    public async Task<AddImageResult> AddImageAsync(AddProductImageCommand command)
+    {
+        var product = await _repo.GetProductByIdAsync(command.ProductId);
+        if (product is null)
+            return new AddImageResult(false, Guid.NewGuid(), "Product not found.");
+
+        var imageId = Guid.NewGuid();
+        var extension = Path.GetExtension(command.FileName);
+        var blobName = $"products/{command.ProductId}/images/{imageId}{extension}";
+
+        if (command.Content.CanSeek)
+            command.Content.Position = 0;
+
+        BlobUploadResult upload;
+        try
+        {
+            upload = await _blobStorage.UploadAsync(
+                blobName,
+                command.Content,
+                command.ContentType
+            );
+        }
+        catch (Exception ex)
+        {
+            return new AddImageResult(false, Guid.NewGuid(), $"Upload failed: {ex.Message}");
+        }
+
+        return new AddImageResult(
+            Success: true,
+            ImageId: imageId,
+            UrlOrError: upload.Url
+        );
     }
 }
