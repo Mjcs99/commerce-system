@@ -5,5 +5,6 @@ public sealed record ProductResult(
     string Name,
     string Sku,
     decimal Price,
-    string? ImageUrl = null
+    string? PrimaryImageUrl
 );
+

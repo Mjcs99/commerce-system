@@ -1,5 +1,5 @@
 using Commerce.Domain.Entities;
-
+using Commerce.Application.Products.Results;
 namespace Commerce.Application.Interfaces;
 
 public interface IProductRepository
@@ -8,4 +8,5 @@ public interface IProductRepository
     Task<Product?> GetProductByIdAsync(Guid id);
     Task<Product?> GetProductBySkuAsync(string sku);
     Task<Guid> CreateAsync(Product product);
+    Task AddImageAsync(Guid productId, string blobName, Guid imageId, bool makePrimary);
 }

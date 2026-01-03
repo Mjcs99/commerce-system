@@ -31,7 +31,7 @@ public class AdminProductsController : ControllerBase
         if (product is null)
             return Problem("Product was created but could not be loaded.");
 
-        var productDto = new ProductDto(product.Id, product.Name, product.Sku, product.Price);
+        var productDto = new ProductDto(product.Id, product.Sku, product.Name, product.Price);
 
 
         return CreatedAtRoute(

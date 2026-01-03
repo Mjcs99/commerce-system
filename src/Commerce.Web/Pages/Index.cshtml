@@ -228,6 +228,27 @@
         align-items: flex-end;
         justify-content: space-between;
         padding: 12px;
+        overflow: hidden;
+        position: relative;
+    }
+    .thumb img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+
+        mask-image: radial-gradient(
+            ellipse at center,
+            black 65%,
+            transparent 100%
+        );
+
+        -webkit-mask-image: radial-gradient(
+            ellipse at center,
+            black 65%,
+            transparent 100%
+        );
     }
 
     .badge {
@@ -340,6 +361,8 @@
             {
                 <article class="card">
                     <div class="thumb">
+                   
+                        <img src="@(p.PrimaryImageUrl is null ? "/images/product-placeholder.png" : p.PrimaryImageUrl)" alt="@p.Name" style="width:100%; height:100%; object-fit:cover;" />
                         <span class="badge">UrbanThread</span>
                         @*<span class="price">$@p.Price</span>*@
                     </div>

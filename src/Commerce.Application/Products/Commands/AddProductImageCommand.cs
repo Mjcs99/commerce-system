@@ -4,5 +4,5 @@ public sealed record AddProductImageCommand(
     Stream Content,
     string FileName,
     string ContentType, 
-    bool isPrimary = false
+    bool IsPrimary = false
 );

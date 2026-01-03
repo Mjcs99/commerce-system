@@ -20,7 +20,7 @@ public static class DependencyInjection
         {
             configuration.GetSection("BlobStorage").Bind(options);
         });
-        services.AddScoped<IBlobStorage, AzureBlobStorage>();
+        services.AddScoped<IProductImageStorage, AzureBlobStorage>();
         services.AddSingleton<IProductImageUriBuilder, AzureBlobProductImageUriBuilder>();
 
         return services;

@@ -5,5 +5,5 @@ public record ProductDto(
     string Sku,
     string Name,
     decimal PriceAmount,
-    string? ImagesUrl = null
+    string? PrimaryImageUrl = null
 );

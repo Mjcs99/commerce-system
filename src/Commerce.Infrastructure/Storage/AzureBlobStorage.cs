@@ -7,7 +7,7 @@ using Azure.Identity;
 using System.Runtime.InteropServices;
 namespace Commerce.Infrastructure.Storage;
 
-public sealed class AzureBlobStorage : IBlobStorage
+public sealed class AzureBlobStorage : IProductImageStorage
 {
     private readonly BlobContainerClient _container;
 

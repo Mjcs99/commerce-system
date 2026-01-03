@@ -1,6 +1,6 @@
 namespace Commerce.Application.Interfaces.Out;
 
-public interface IBlobStorage
+public interface IProductImageStorage
 {
     Task<BlobUploadResult> UploadAsync(
         string blobName,

@@ -35,10 +35,10 @@ public class ProductsController : ControllerBase
 
         var dtos = result.Items.Select(p => new ProductDto(
             p.Id,
-            p.Name,
             p.Sku,
+            p.Name,
             p.Price,
-            p.ImageUrl
+            p.PrimaryImageUrl
         )).ToList();
 
         return Ok(new PagedResult<ProductDto>(
