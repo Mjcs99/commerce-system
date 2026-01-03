@@ -5,7 +5,7 @@ using Commerce.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddInfrastructureServices()
+builder.Services.AddInfrastructureServices(builder.Configuration)
                 .AddApplicationServices();
 
 builder.Services.AddDbContext<CommerceDbContext>(options =>
@@ -26,10 +26,7 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<CommerceDbContext>();
 
-    await db.Database.EnsureDeletedAsync();
-    await db.Database.EnsureCreatedAsync();
 
-    await SeedData.SeedProductsAsync(db, 100);
     await SeedData.SeedProductsAsync(db, count: 100);
     app.UseSwagger();
     app.UseSwaggerUI();

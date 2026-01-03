@@ -1,4 +1,3 @@
-using System.Net.Http.Json;
 using Commerce.Contracts.Common;
 using Commerce.Contracts.Products;
 

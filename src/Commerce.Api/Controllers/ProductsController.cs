@@ -3,6 +3,7 @@ using Commerce.Contracts.Common;
 using Commerce.Application.Interfaces;
 using Commerce.Application.Products.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Commerce.Api.Controllers;
 
@@ -34,9 +35,10 @@ public class ProductsController : ControllerBase
 
         var dtos = result.Items.Select(p => new ProductDto(
             p.Id,
-            p.Name,
             p.Sku,
-            p.Price
+            p.Name,
+            p.Price,
+            p.PrimaryImageUrl
         )).ToList();
 
         return Ok(new PagedResult<ProductDto>(
@@ -48,8 +50,8 @@ public class ProductsController : ControllerBase
     }
 
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ProductDto>> GetProductByIdAsync(Guid id)
+    [HttpGet("{id:guid}", Name = "GetProductById")]
+    public async Task<ActionResult<ProductDto>> GetProductByIdAsync([FromRoute] Guid id)
     {
         var product = await _productService.GetProductByIdAsync(id);
         return product is null ? NotFound() : Ok(product);
