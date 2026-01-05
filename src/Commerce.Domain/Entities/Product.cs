@@ -1,5 +1,3 @@
-using System.IO.Pipelines;
-
 namespace Commerce.Domain.Entities;
 
 public sealed class Product
@@ -10,19 +8,22 @@ public sealed class Product
     public Guid Id { get; private set; }
     public string Sku { get; private set; } = null!;
     public string Name { get; private set; } = null!;
+    public Guid? CategoryId { get; private set; }
+    public Category? Category { get; private set; }
     public decimal PriceAmount { get; private set; }
 
     private Product() { } 
 
-    public Product(Guid id, string sku, string name, decimal priceAmount)
+    public Product(Guid id, string sku, string name, Guid categoryId, decimal priceAmount)
     {
         Id = id;
         Sku = sku;
         Name = name;
         PriceAmount = priceAmount;
+        CategoryId = categoryId;
     }
-    public static Product Create(string sku, string name, decimal priceAmount)
-        => new(Guid.NewGuid(), sku, name, priceAmount);
+    public static Product Create(string sku, string name, Guid categoryId,decimal priceAmount)
+        => new(Guid.NewGuid(), sku, name, categoryId, priceAmount);
     public ProductImage? GetPrimaryImage()
     {
         return _images.FirstOrDefault(i => i.IsPrimary);

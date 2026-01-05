@@ -20,19 +20,21 @@ public class AdminProductsController : ControllerBase
     {
         _productService = productService;
     }
-
+    // What do i want this to return? Come back to this later
     [HttpPost]
     public async Task<ActionResult<ProductDto>> AddProductAsync([FromBody] CreateProductDto dto, CancellationToken ct)
     {
-        var productId = await _productService.AddProductAsync(
-            new CreateProductCommand(dto.Name, dto.Sku, dto.Price));
+        var result = await _productService.AddProductAsync(
+            new CreateProductCommand(dto.Name, dto.Sku, dto.CategorySlug, dto.Price));
 
-        var product = await _productService.GetProductByIdAsync(productId);
+        if (!result.Success)
+            return BadRequest(result.ErrorMessage);
+
+        var product = await _productService.GetProductByIdAsync(result.ProductId);
         if (product is null)
             return Problem("Product was created but could not be loaded.");
 
         var productDto = new ProductDto(product.Id, product.Sku, product.Name, product.Price);
-
 
         return CreatedAtRoute(
             "GetProductById",
