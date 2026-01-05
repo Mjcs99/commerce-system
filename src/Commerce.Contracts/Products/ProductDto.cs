@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace Commerce.Contracts.Products;
 
 public record ProductDto(
