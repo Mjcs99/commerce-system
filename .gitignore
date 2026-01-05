@@ -47,4 +47,4 @@ appsettings.*.Secrets.json
 # Frontend
 ####################################
 
-src/Commerce.Web
+src/Commerce.Web/
