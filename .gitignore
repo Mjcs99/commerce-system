@@ -43,4 +43,8 @@ appsettings.*.Secrets.json
 
 .vscode/
 
+####################################
+# Frontend
+####################################
 
+src/Commerce.Web

@@ -24,7 +24,7 @@ public class ProductService : IProductService
 
     public async Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query)
     {
-        var (products, totalCount) = await _repo.GetPagedAsync(query.SearchTerm, query.Page, query.PageSize);
+        var (products, totalCount) = await _repo.GetPagedAsync(query.SearchTerm, query.CategorySlug, query.Page, query.PageSize);
 
         var results = products.Select(p =>
         {
@@ -53,11 +53,27 @@ public class ProductService : IProductService
         return product is null ? null : Map(product, _imageUriBuilder.BuildUri(product.Id.ToString(), 3600));
     }
 
-    public async Task<Guid> AddProductAsync(CreateProductCommand command)
+    public async Task<AddProductResult> AddProductAsync(CreateProductCommand command)
     {
-        var product = Product.Create(command.Sku, command.Name, command.Price);
-        await _repo.CreateAsync(product);
-        return product.Id;
+        try
+        {
+            var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug);
+            if (categoryId is null)
+                throw new InvalidOperationException("Category not found.");
+
+            var product = Product.Create(
+                sku: command.Sku,
+                name: command.Name,
+                categoryId: categoryId.Value,
+                priceAmount: command.Price);
+
+            await _repo.CreateAsync(product);
+            return new AddProductResult(true, product.Id, null);
+        }
+        catch (Exception ex)
+        {
+            return new AddProductResult(false, Guid.Empty, $"An error occurred while adding the product: {ex.Message}");
+        }
     }
 
     public async Task<AddImageResult> AddImageAsync(AddProductImageCommand command)
@@ -106,4 +122,5 @@ public class ProductService : IProductService
             return new AddImageResult(false, null, $"Failed to upload image: {ex.Message}");
         }
     }
+
 }

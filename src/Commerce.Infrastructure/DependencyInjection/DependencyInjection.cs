@@ -8,6 +8,8 @@ using Commerce.Application.Images;
 using Commerce.Infrastructure.Options;
 using Commerce.Application.Interfaces.Out;
 using Commerce.Infrastructure.Storage;
+using Commerce.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 public static class DependencyInjection
 {
@@ -15,6 +17,8 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddDbContext<CommerceDbContext>(options =>
+            options.UseSqlite(configuration.GetConnectionString("CommerceDb")));
         services.AddScoped<IProductRepository, EfProductRepository>();
         services.Configure<BlobStorageOptions>(options =>
         {

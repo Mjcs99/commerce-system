@@ -22,6 +22,7 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<PagedResult<ProductDto>>> GetAllProductsAsync(
         [FromQuery] string? searchTerm,
+        [FromQuery] string? categorySlug,
         [FromQuery] int page = 1
         )
     {
@@ -29,6 +30,7 @@ public class ProductsController : ControllerBase
         var result = await _productService.GetProductsAsync(
             new GetProductsQuery(
                 string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm.Trim(),
+                string.IsNullOrWhiteSpace(categorySlug) ? null : categorySlug.Trim(),
                 Math.Max(page, 1),
                 pageSize
             ));

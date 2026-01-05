@@ -1,414 +1,126 @@
 ﻿@page
-@model Commerce.Web.Pages.Products.IndexModel
-
 @{
-    ViewData["Title"] = "UrbanThread";
+    ViewData["Title"] = "Luxe Threads — Home";
 }
 
-<style>
-    :root {
-        --bg: #ffffff;
-        --panel: #ffffff;
-        --border: #e5e7eb;
-        --text: #0f172a;
-        --muted: #64748b;
-        --accent: #2563eb;
-        --radius: 16px;
-        --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-        --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
-    }
-
-    body { background: var(--bg); color: var(--text); }
-
-    .topbar {
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        background: rgba(255,255,255,0.92);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--border);
-    }
-
-    .topbar-inner {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 14px 20px;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-        color: var(--text);
-        white-space: nowrap;
-    }
-
-    .brand img {
-        width: 150px;
-        height: 150px;
-        display: block;
-        border-radius: 10px;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .brand-name {
-        font-weight: 750;
-        letter-spacing: 0.2px;
-        font-size: 1.05rem;
-        line-height: 1;
-    }
-
-    .brand-tag {
-        display: block;
-        margin-top: 3px;
-        font-size: 0.82rem;
-        color: var(--muted);
-        font-weight: 500;
-        letter-spacing: 0.1px;
-    }
-
-    .search {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background: white;
-        box-shadow: var(--shadow-sm);
-        min-width: 260px;
-    }
-
-    .search .icon {
-        color: var(--muted);
-        font-size: 0.95rem;
-    }
-
-    .search input {
-        flex: 1;
-        border: none;
-        outline: none;
-        font-size: 0.95rem;
-        color: var(--text);
-    }
-
-    .btn {
-        padding: 9px 14px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: white;
-        cursor: pointer;
-        font-size: 0.92rem;
-        color: var(--text);
-        text-decoration: none;
-        transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-    }
-
-    .btn:hover { background: #f8fafc; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
-    .btn:active { transform: translateY(0px); }
-
-    .btn-primary {
-        background: var(--accent);
-        color: white;
-        border-color: var(--accent);
-    }
-
-    .btn-primary:hover { background: #1d4ed8; }
-
-    .pill {
-        padding: 9px 12px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #f8fafc;
-        color: var(--muted);
-        font-size: 0.92rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-    }
-
-    .wrap {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 22px 20px 48px;
-    }
-
-    .hero {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 14px;
-        padding: 18px 18px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-        box-shadow: var(--shadow-sm);
-    }
-
-    .hero h1 {
-        margin: 0;
-        font-size: 1.55rem;
-        letter-spacing: 0.1px;
-    }
-
-    .hero p {
-        margin: 6px 0 0;
-        color: var(--muted);
-        max-width: 70ch;
-        font-size: 0.98rem;
-    }
-
-    .stats {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-
-    .stat {
-        padding: 10px 12px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: white;
-        box-shadow: var(--shadow-sm);
-        min-width: 150px;
-    }
-
-    .stat .k { font-size: 0.82rem; color: var(--muted); }
-    .stat .v { margin-top: 4px; font-weight: 700; }
-
-    .grid {
-        margin-top: 16px;
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 16px;
-    }
-
-    .card {
-        grid-column: span 12;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: white;
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
-        transition: box-shadow 0.15s ease, transform 0.12s ease;
-    }
-
-    .card:hover {
-        box-shadow: var(--shadow-md);
-        transform: translateY(-2px);
-    }
-
-    @@media (min-width: 640px) {
-        .card { grid-column: span 6; }
-    }
-
-    @@media (min-width: 1024px) {
-        .card { grid-column: span 4; }
-    }
-
-    .thumb {
-        height: 160px;
-        background:
-            radial-gradient(700px 240px at 30% 10%, rgba(37,99,235,0.08), transparent 55%),
-            radial-gradient(700px 240px at 80% 0%, rgba(15,23,42,0.06), transparent 60%),
-            #f8fafc;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        padding: 12px;
-        overflow: hidden;
-        position: relative;
-    }
-    .thumb img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-
-        mask-image: radial-gradient(
-            ellipse at center,
-            black 65%,
-            transparent 100%
-        );
-
-        -webkit-mask-image: radial-gradient(
-            ellipse at center,
-            black 65%,
-            transparent 100%
-        );
-    }
-
-    .badge {
-        padding: 7px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.85);
-        color: var(--muted);
-        font-size: 0.85rem;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .price {
-        padding: 7px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.95);
-        color: var(--text);
-        font-weight: 750;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .card-body { padding: 14px 14px 16px; }
-    .name { margin: 0 0 6px; font-weight: 750; font-size: 1.03rem; letter-spacing: 0.1px; }
-    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
-
-    .card-actions {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-    }
-
-    .muted { color: var(--muted); font-size: 0.9rem; }
-
-    .pager {
-        margin-top: 22px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .empty {
-        margin-top: 16px;
-        padding: 18px;
-        border: 1px dashed #cbd5e1;
-        border-radius: var(--radius);
-        color: var(--muted);
-        background: #fbfdff;
-    }
-</style>
-
-<header class="topbar">
-    <div class="topbar-inner">
-        <a class="brand" asp-page="./Index">
-            <img src="~/images/urbanthread-logo.png" alt="UrbanThread logo" />
-            <div>
-                <span class="brand-name">UrbanThread</span>
-                <span class="brand-tag">minimal streetwear essentials</span>
-            </div>
-        </a>
-
-        <form method="get" class="search">
-            <span class="icon">⌕</span>
-            <input name="q" value="@Model.SearchTerm" placeholder="Search by name or SKU…" />
-            <button class="btn btn-primary" type="submit">Search</button>
-            <a class="btn" asp-page="./Index">Clear</a>
-        </form>
-
-        <span class="pill">Categories ▾ (soon)</span>
-        <a class="btn" href="#">Cart (soon)</a>
-    </div>
-</header>
-
-<main class="wrap">
-    <section class="hero">
-        <div>
-            <h1>New drops. Clean fits.</h1>
-            <p>Discover our latest collection of minimal streetwear essentials designed for everyday comfort and style.</p>
+<section class="container hero">
+    <div class="hero__card">
+        <div class="hero__top">
+            <span class="chip">New drop</span>
+            <span class="chip chip--ghost">Free shipping $75+</span>
         </div>
 
-        <div class="stats">
+        <h1 class="hero__title">Premium basics. <span class="grad">Street-ready.</span></h1>
+        <p class="hero__sub">
+            Clean cuts, heavy fabrics, and the kind of fit you keep reaching for.
+        </p>
+
+        <div class="hero__cta">
+            <a class="btn btn--primary" href="#">Shop New This Week</a>
+            <a class="btn btn--ghost" href="#">Browse Categories</a>
+        </div>
+
+        <div class="hero__stats">
             <div class="stat">
-                <div class="k">Results</div>
-                <div class="v">@Model.TotalCount</div>
+                <div class="stat__k">2–3 days</div>
+                <div class="stat__l">Delivery (avg)</div>
             </div>
             <div class="stat">
-                <div class="k">Page</div>
-                <div class="v">@Model.CurrentPage of @Model.TotalPages</div>
+                <div class="stat__k">Easy</div>
+                <div class="stat__l">Returns</div>
+            </div>
+            <div class="stat">
+                <div class="stat__k">Top</div>
+                <div class="stat__l">Rated fits</div>
             </div>
         </div>
-    </section>
+    </div>
 
-    @if (Model.Products.Count == 0)
-    {
-        <div class="empty">
-            No products found.
-            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
-            {
-                <span> Try a different search term or clear the filter.</span>
-            }
-        </div>
-    }
-    else
-    {
-        <section class="grid">
-            @foreach (var p in Model.Products)
-            {
-                <article class="card">
-                    <div class="thumb">
-                   
-                        <img src="@(p.PrimaryImageUrl is null ? "/images/product-placeholder.png" : p.PrimaryImageUrl)" alt="@p.Name" style="width:100%; height:100%; object-fit:cover;" />
-                        <span class="badge">UrbanThread</span>
-                        @*<span class="price">$@p.Price</span>*@
-                    </div>
-
-                    <div class="card-body">
-                        <h3 class="name">@p.Name</h3>
-                        <div class="meta">
-                            <span>SKU: @p.Sku</span>
-                            <span>Category: TBD</span>
-                        </div>
-
-                        <div class="card-actions">
-                            <span class="muted">Details (soon)</span>
-                            <a class="btn btn-primary" href="#">Add to cart</a>
-                        </div>
-                    </div>
-                </article>
-            }
-        </section>
-    }
-
-    <div class="pager">
-        <div>
-            @if (Model.HasPrev)
-            {
-                <a class="btn"
-                   asp-page="./Index"
-                   asp-route-p="@(Model.CurrentPage - 1)"
-                   asp-route-q="@Model.SearchTerm">
-                    ← Prev
-                </a>
-            }
-        </div>
-
-        <span class="pill">Page @Model.CurrentPage of @Model.TotalPages</span>
-
-        <div>
-            @if (Model.HasNext)
-            {
-                <a class="btn btn-primary"
-                   asp-page="./Index"
-                   asp-route-p="@(Model.CurrentPage + 1)"
-                   asp-route-q="@Model.SearchTerm">
-                    Next →
-                </a>
-            }
+    <div class="hero__image">
+        <!-- Placeholder “image” block — swap for a real photo later -->
+        <div class="imgcard">
+            <div class="imgcard__shine"></div>
+            <div class="imgcard__label">
+                <div class="imgcard__title">Winter Capsule</div>
+                <div class="muted">Oversized hoodies + utility jackets</div>
+            </div>
         </div>
     </div>
-</main>
+</section>
+
+<section class="container section">
+    <div class="section__head">
+        <h2>New This Week</h2>
+        <a class="link" href="#">View all →</a>
+    </div>
+
+    <div class="grid">
+        @for (int i = 1; i <= 8; i++)
+        {
+            <article class="card">
+                <div class="card__media">
+                    <span class="tag">NEW</span>
+                    <div class="ph"></div>
+                </div>
+
+                <div class="card__body">
+                    <div class="card__title">Essential Tee @i</div>
+                    <div class="card__meta muted">Soft cotton • Relaxed fit</div>
+
+                    <div class="card__row">
+                        <div class="price">$@(24 + i).99</div>
+                        <button class="btn btn--tiny" type="button">Add</button>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="container section">
+    <div class="section__head">
+        <h2>Hot Deals</h2>
+        <a class="link" href="#">Shop deals →</a>
+    </div>
+
+    <div class="deals">
+        <div class="deal">
+            <div class="deal__badge">-35%</div>
+            <div class="deal__title">Heavyweight Hoodie</div>
+            <div class="muted">Limited colors • While supplies last</div>
+            <div class="deal__row">
+                <div class="price">
+                    <span class="strike">$89.00</span>
+                    <span>$57.85</span>
+                </div>
+                <a class="btn btn--primary" href="#">Grab deal</a>
+            </div>
+        </div>
+
+        <div class="deal deal--alt">
+            <div class="deal__badge">Bundle</div>
+            <div class="deal__title">2 Tees + 1 Cap</div>
+            <div class="muted">Build your fit and save</div>
+            <div class="deal__row">
+                <div class="price">
+                    <span class="strike">$74.00</span>
+                    <span>$59.00</span>
+                </div>
+                <a class="btn btn--ghost" href="#">Build bundle</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container section">
+    <div class="banner">
+        <div>
+            <h3>Members get early access</h3>
+            <div class="muted">Drop alerts, exclusive deals, and restocks.</div>
+        </div>
+        <div class="banner__cta">
+            <input class="banner__input" type="email" placeholder="you@email.com" />
+            <button class="btn btn--primary" type="button">Join</button>
+        </div>
+    </div>
+</section>

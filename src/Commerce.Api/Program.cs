@@ -8,9 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructureServices(builder.Configuration)
                 .AddApplicationServices();
 
-builder.Services.AddDbContext<CommerceDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("CommerceDb")));
-
 builder.Services.AddApiVersioning();
 
 builder.Services.AddControllers();
@@ -27,7 +24,7 @@ if (app.Environment.IsDevelopment())
     var db = scope.ServiceProvider.GetRequiredService<CommerceDbContext>();
 
 
-    await SeedData.SeedProductsAsync(db, count: 100);
+    await SeedData.SeedProductsAsync(db, count: 10);
     app.UseSwagger();
     app.UseSwaggerUI();
 }
