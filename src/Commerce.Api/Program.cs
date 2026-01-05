@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
     var db = scope.ServiceProvider.GetRequiredService<CommerceDbContext>();
 
 
-    await SeedData.SeedProductsAsync(db, count: 100);
+    await SeedData.SeedProductsAsync(db, count: 10);
     app.UseSwagger();
     app.UseSwaggerUI();
 }
