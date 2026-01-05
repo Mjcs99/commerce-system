@@ -8,9 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructureServices(builder.Configuration)
                 .AddApplicationServices();
 
-builder.Services.AddDbContext<CommerceDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("CommerceDb")));
-
 builder.Services.AddApiVersioning();
 
 builder.Services.AddControllers();

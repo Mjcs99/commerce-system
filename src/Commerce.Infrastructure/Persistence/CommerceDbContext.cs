@@ -8,7 +8,7 @@ public class CommerceDbContext : DbContext
     public CommerceDbContext(DbContextOptions<CommerceDbContext> options) : base(options) { }
 
     public DbSet<Product> Products => Set<Product>();
-    public DbSet<ProductImage> ProductImages => Set<ProductImage>();
+    public DbSet<Category> Category => Set<Category>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Product>(b =>
@@ -20,10 +20,16 @@ public class CommerceDbContext : DbContext
 
             b.Property(p => p.Name).IsRequired().HasMaxLength(200);
             b.Property(p => p.PriceAmount).IsRequired();
-
+            
             b.Navigation(p => p.Images)
              .UsePropertyAccessMode(PropertyAccessMode.Field);
-
+            // come back to this later
+            b.Property(p => p.CategoryId).IsRequired(false);
+            b.HasOne(p => p.Category)
+            .WithMany()                
+            .HasForeignKey(p => p.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
+            
             b.HasMany(p => p.Images)
              .WithOne()
              .HasForeignKey(pi => pi.ProductId)
@@ -33,12 +39,19 @@ public class CommerceDbContext : DbContext
         modelBuilder.Entity<ProductImage>(b =>
         {
             b.HasKey(pi => pi.Id);
-
             b.Property(pi => pi.ProductId).IsRequired();
             b.Property(pi => pi.BlobName).IsRequired().HasMaxLength(1024);
             b.Property(pi => pi.IsPrimary).IsRequired();
-
+            
             b.HasIndex(pi => new { pi.ProductId, pi.IsPrimary });
+        });
+
+        modelBuilder.Entity<Category>(b =>
+        {
+            b.HasKey(c => c.Id);
+            b.Property(c => c.Name).IsRequired().HasMaxLength(100);
+            b.Property(c => c.Slug).IsRequired().HasMaxLength(100);
+            b.HasIndex(c => c.Slug).IsUnique();
         });
     }
 }

@@ -1,4 +1,5 @@
 using Commerce.Application.Interfaces;
+using Commerce.Application.Products.Commands;
 using Commerce.Domain.Entities;
 using Commerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ public class EfProductRepository : IProductRepository
         _db = db;
     }
 
-    
+
     public async Task<Guid> CreateAsync(Product product)
     {
         _db.Products.Add(product);
@@ -24,35 +25,50 @@ public class EfProductRepository : IProductRepository
         return product.Id;
     }
 
-    public async Task<(IReadOnlyList<Product>, int)> GetPagedAsync(
-    string? searchTerm,
-    int page,
-    int pageSize)
+    public async Task<(IReadOnlyList<Product> items, int totalCount)> GetPagedAsync(
+        string? searchTerm,
+        string? categorySlug,
+        int page,
+        int pageSize)
     {
-        IQueryable<Product> query = _db.Products
-            .AsNoTracking()
-            .Include(p => p.Images);
-
-        if (!string.IsNullOrWhiteSpace(searchTerm))
-        {
-            var term = searchTerm.ToLower();
-            query = query.Where(p =>
-                p.Name.ToLower().Contains(term) ||
-                p.Sku.ToLower().Contains(term));
-        }
-
-        query = query.OrderBy(p => p.Name).ThenBy(p => p.Id);
-
-        var totalCount = await query.CountAsync();
-
         page = Math.Max(page, 1);
         pageSize = Math.Clamp(pageSize, 1, 200);
 
-        var items = await query
+        Guid? categoryId = null;
+
+        if (!string.IsNullOrWhiteSpace(categorySlug))
+        {
+            categoryId = await _db.Category
+                .AsNoTracking()
+                .Where(c => c.Slug == categorySlug) 
+                .Select(c => (Guid?)c.Id)
+                .SingleOrDefaultAsync();
+
+            if (categoryId is null)
+                return (Array.Empty<Product>(), 0);
+        }
+
+        IQueryable<Product> baseQuery = _db.Products.AsNoTracking();
+
+        if (categoryId is not null)
+            baseQuery = baseQuery.Where(p => p.CategoryId == categoryId.Value);
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            baseQuery = baseQuery.Where(p =>
+                EF.Functions.Like(p.Name, $"%{searchTerm}%") ||
+                EF.Functions.Like(p.Sku, $"%{searchTerm}%"));
+        }
+
+        var totalCount = await baseQuery.CountAsync();
+
+        var items = await baseQuery
+            .OrderBy(p => p.Name).ThenBy(p => p.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Include(p => p.Images.Where(i => i.IsPrimary))  
             .ToListAsync();
-       
+
         return (items, totalCount);
     }
 
@@ -82,4 +98,12 @@ public class EfProductRepository : IProductRepository
         => await _db.Products
             .AsNoTracking()
             .SingleOrDefaultAsync(p => p.Sku == sku);
+
+    public async Task<Guid?> GetCategoryIdBySlugAsync(string categorySlug)
+    {
+        var category = await _db.Category
+            .AsNoTracking()
+            .SingleOrDefaultAsync(c => c.Slug == categorySlug);
+        return category?.Id;
+    }
 }
