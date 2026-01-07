@@ -12,6 +12,4 @@ public interface IProductService
     Task<AddProductResult> AddProductAsync(CreateProductCommand command);
     Task<ProductResult?> GetProductByIdAsync(Guid productId);
     Task<ProductResult?> GetProductBySkuAsync(string sku);
-    
-    
 }
