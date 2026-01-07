@@ -20,7 +20,16 @@ public sealed class Customer
         LastName = lastName;
         CreatedAtUtc = DateTime.UtcNow;
     }
-
+    public void UpdateDetails(string email, string? firstName, string? lastName)
+    {
+        if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Email is required.", nameof(email));
+        email = email.Trim().ToLowerInvariant();
+        firstName = firstName is null ? string.Empty : firstName;
+        lastName = lastName is null ? string.Empty : lastName;
+        Email = email;
+        FirstName = firstName;
+        LastName = lastName;
+    }
     public static Customer Create(string externalUserId, string email, string? firstName, string? lastName)
     {
         if (string.IsNullOrWhiteSpace(externalUserId)) throw new ArgumentException("ExternalUserId is required.", nameof(externalUserId));

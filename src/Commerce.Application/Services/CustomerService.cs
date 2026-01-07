@@ -20,9 +20,11 @@ public class CustomerService : ICustomerService
             customer = Customer.Create(externalCustomerId, email, firstName, lastName);
             await _customerRepository.AddCustomerAsync(customer);
         }
+        if (customer.FirstName != firstName || customer.LastName != lastName || customer.Email != email)
+        {
+            customer.UpdateDetails(email, firstName, lastName);
+            await _customerRepository.SaveChangesAsync();
+        }
         return customer;
-        
     }
-
-
 }

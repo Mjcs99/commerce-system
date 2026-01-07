@@ -4,4 +4,5 @@ public interface ICustomerRepository
 {
     Task<Customer?> GetCustomerByExternalIdAsync(string externalCustomerId);
     Task AddCustomerAsync(Customer customer);
+    Task<int> SaveChangesAsync();
 }

@@ -20,26 +20,26 @@ public class CustomerController : ControllerBase
     [HttpPost("me")]
     public async Task<IActionResult> GetOrCreateCustomer()
     {
-        /*
+        
         foreach (var claim in User.Claims)
         {
             Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
         }
-        */
+        
         var externalUserId = User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
         if (externalUserId == null)
         {
             Console.WriteLine("No sub or 'oid claim found for the user.");
             return Forbid();
         }
-        var email = User.FindFirstValue("preferred_username") ?? User.FindFirstValue(ClaimTypes.Email);
+        var email = User.FindFirstValue(ClaimTypes.Email);
         if (email == null)
         {
             Console.WriteLine("No email claim found for the user.");
             return Forbid();
         }
-        var firstName = User.FindFirstValue("first_name");
-        var lastName = User.FindFirstValue("last_name");
+        var firstName = User.FindFirstValue(ClaimTypes.GivenName);
+        var lastName = User.FindFirstValue(ClaimTypes.Surname);
         var customer = await _customerService.GetOrCreateCustomerAsync(externalUserId, email, firstName, lastName);
 
         return Ok(customer);

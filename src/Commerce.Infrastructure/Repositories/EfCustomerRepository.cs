@@ -23,5 +23,8 @@ public sealed class EfCustomerRepository : ICustomerRepository
 
     public async Task<Customer?> GetCustomerByExternalIdAsync(string externalCustomerId)
         => await _db.Customer.SingleOrDefaultAsync(c => c.ExternalUserId == externalCustomerId);
-   
+    public async Task<int> SaveChangesAsync()
+    {
+        return await _db.SaveChangesAsync();
+    }
 }
