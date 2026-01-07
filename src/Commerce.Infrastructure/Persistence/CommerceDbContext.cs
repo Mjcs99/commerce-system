@@ -9,6 +9,7 @@ public class CommerceDbContext : DbContext
 
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Category => Set<Category>();
+    public DbSet<Customer> Customer => Set<Customer>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Product>(b =>
@@ -52,6 +53,19 @@ public class CommerceDbContext : DbContext
             b.Property(c => c.Name).IsRequired().HasMaxLength(100);
             b.Property(c => c.Slug).IsRequired().HasMaxLength(100);
             b.HasIndex(c => c.Slug).IsUnique();
+        });
+
+        modelBuilder.Entity<Customer>(b => 
+        {
+            b.HasKey(c => c.Id);
+            b.Property(c => c.ExternalUserId).IsRequired().HasMaxLength(100);
+            b.HasIndex(c => c.ExternalUserId).IsUnique();
+            b.Property(c => c.FirstName).HasMaxLength(50);
+            b.Property(c => c.LastName).HasMaxLength(50);
+            b.Property(c => c.Email).IsRequired().HasMaxLength(256);
+            b.HasIndex(c => c.Email).IsUnique();
+            b.Property(c => c.CreatedAtUtc)
+            .IsRequired();
         });
     }
 }

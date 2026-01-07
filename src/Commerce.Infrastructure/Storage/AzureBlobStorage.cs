@@ -25,7 +25,6 @@ public sealed class AzureBlobStorage : IProductImageStorage
         string contentType,
         CancellationToken ct = default)
     {
-        // Pre - provision later
         await _container.CreateIfNotExistsAsync(PublicAccessType.None, cancellationToken: ct);
         
         var blob = _container.GetBlobClient(blobName);
