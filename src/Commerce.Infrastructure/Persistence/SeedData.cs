@@ -28,7 +28,7 @@ public static class SeedData
                 var sku = $"SKU-{skuCounter:D4}";    
                 var price = Math.Round(5m + (i * 0.75m), 2);
 
-                products.Add(Product.Create(sku, name, price, category.Id));
+                products.Add(Product.Create(sku, name, category.Id, price));
                 skuCounter++;
             }
         }
