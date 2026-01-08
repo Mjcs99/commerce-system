@@ -3,7 +3,7 @@ using Commerce.Application.Products.Commands;
 using Commerce.Application.Common;
 using Commerce.Application.Products.Queries;
 
-namespace Commerce.Application.Interfaces;
+namespace Commerce.Application.Interfaces.In;
 
 public interface IProductService
 {

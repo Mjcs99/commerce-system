@@ -1,6 +1,6 @@
 using Commerce.Domain.Entities;
 using Commerce.Application.Products.Results;
-namespace Commerce.Application.Interfaces;
+namespace Commerce.Application.Interfaces.Out;
 
 public interface IProductRepository
 {
