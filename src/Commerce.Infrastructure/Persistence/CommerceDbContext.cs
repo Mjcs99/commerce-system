@@ -10,31 +10,29 @@ public class CommerceDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Category => Set<Category>();
     public DbSet<Customer> Customer => Set<Customer>();
+    public DbSet<Order> Order => Set<Order>();
+    public DbSet<InventoryItem> InventoryItem => Set<InventoryItem>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Product>(b =>
         {
             b.HasKey(p => p.Id);
-
             b.Property(p => p.Sku).IsRequired().HasMaxLength(64);
             b.HasIndex(p => p.Sku).IsUnique();
-
             b.Property(p => p.Name).IsRequired().HasMaxLength(200);
             b.Property(p => p.PriceAmount).IsRequired();
-            
             b.Navigation(p => p.Images)
-             .UsePropertyAccessMode(PropertyAccessMode.Field);
-            // come back to this later
-            b.Property(p => p.CategoryId).IsRequired(false);
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            b.Property(p => p.CategoryId).IsRequired();
             b.HasOne(p => p.Category)
-            .WithMany()                
-            .HasForeignKey(p => p.CategoryId)
-            .OnDelete(DeleteBehavior.Restrict);
-            
+                .WithMany()                
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
             b.HasMany(p => p.Images)
-             .WithOne()
-             .HasForeignKey(pi => pi.ProductId)
-             .OnDelete(DeleteBehavior.Cascade);
+                .WithOne()
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<ProductImage>(b =>
@@ -43,7 +41,6 @@ public class CommerceDbContext : DbContext
             b.Property(pi => pi.ProductId).IsRequired();
             b.Property(pi => pi.BlobName).IsRequired().HasMaxLength(1024);
             b.Property(pi => pi.IsPrimary).IsRequired();
-            
             b.HasIndex(pi => new { pi.ProductId, pi.IsPrimary });
         });
 
@@ -64,9 +61,57 @@ public class CommerceDbContext : DbContext
             b.Property(c => c.LastName).HasMaxLength(50);
             b.Property(c => c.Email).IsRequired().HasMaxLength(256);
             b.HasIndex(c => c.Email).IsUnique();
-            b.Property(c => c.CreatedAtUtc)
-            .IsRequired();
+            b.Property(c => c.CreatedAtUtc).IsRequired();
         });
+
+        modelBuilder.Entity<InventoryItem>(b =>
+        {
+            b.HasKey(ii => ii.ProductId);
+            b.Property(ii => ii.QuantityAvailable).IsRequired();
+            b.HasOne<Product>()
+                .WithOne()
+                .HasForeignKey<InventoryItem>(ii => ii.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Order>(b =>
+        {
+            b.HasKey(o => o.Id);
+            b.Property(o => o.CustomerId).IsRequired();
+            b.Property(o => o.Status)
+                .HasConversion<string>()
+                .IsRequired();
+            b.Property(o => o.CreatedAtUtc).IsRequired();
+            b.HasOne<Customer>()
+                .WithMany()
+                .HasForeignKey(o => o.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            b.HasMany(o => o.Items)
+                .WithOne()                        
+                .HasForeignKey(oi => oi.OrderId)   
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            b.Navigation(o => o.Items).UsePropertyAccessMode(PropertyAccessMode.Field);
+        });
+
+
+        modelBuilder.Entity<OrderItem>(b =>
+        {
+            b.HasKey(oi => oi.Id);
+            b.Property(oi => oi.OrderId).IsRequired();
+            b.Property(oi => oi.ProductId).IsRequired();
+            b.Property(oi => oi.Quantity).IsRequired();
+            b.Property(oi => oi.UnitPriceAmount).IsRequired();
+            b.HasOne<Order>()
+                .WithMany(o => o.Items)              
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+            b.HasOne<Product>()
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict); 
+        });
+
     }
 }
 
