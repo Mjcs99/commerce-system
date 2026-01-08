@@ -27,4 +27,12 @@ public sealed class Order
 
     public static Order Create(Guid customerId)
         => new(Guid.NewGuid(), customerId, DateTime.UtcNow);
+    public void AddItem(Guid productId, int quanitity, decimal unitPrice)
+    {
+        _items.Add(new OrderItem(
+            productId,
+            quanitity,
+            unitPrice
+        ));
+    }
 }
