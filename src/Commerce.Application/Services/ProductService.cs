@@ -1,5 +1,5 @@
 using Commerce.Application.Products.Results;
-using Commerce.Application.Interfaces;
+using Commerce.Application.Interfaces.In;
 using Commerce.Domain.Entities;
 using Commerce.Application.Products.Queries;
 using Commerce.Application.Products.Commands;
