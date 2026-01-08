@@ -1,4 +1,4 @@
-using Commerce.Application.Interfaces;
+using Commerce.Application.Interfaces.Out;
 using Commerce.Application.Products.Commands;
 using Commerce.Domain.Entities;
 using Commerce.Infrastructure.Persistence;

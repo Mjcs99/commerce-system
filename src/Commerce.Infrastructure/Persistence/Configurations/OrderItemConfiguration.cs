@@ -11,7 +11,7 @@ public sealed class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
         builder.Property(oi => oi.OrderId).IsRequired();
         builder.Property(oi => oi.ProductId).IsRequired();
         builder.Property(oi => oi.Quantity).IsRequired();
-        builder.Property(oi => oi.UnitPriceAmount).IsRequired();
+        builder.Property(oi => oi.UnitPrice).IsRequired();
         builder.HasOne<Order>()
             .WithMany(o => o.Items)              
             .HasForeignKey(oi => oi.OrderId)

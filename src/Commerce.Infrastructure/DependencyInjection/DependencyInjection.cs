@@ -26,8 +26,10 @@ public static class DependencyInjection
         });
         services.AddScoped<IProductImageStorage, AzureBlobStorage>();
         services.AddSingleton<IProductImageUriBuilder, AzureBlobProductImageUriBuilder>();
-       // services.AddScoped<IOrderRepository, EfOrderRepository>();
+        services.AddScoped<IOrderRepository, EfOrderRepository>();
         services.AddScoped<ICustomerRepository, EfCustomerRepository>();
+        services.AddScoped<IOutbox, EfOutbox>();
+        services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         return services;
     }
 }

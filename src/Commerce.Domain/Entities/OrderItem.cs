@@ -7,17 +7,16 @@ public sealed class OrderItem
     public Guid OrderId { get; private set; }
     public Guid ProductId { get; private set; }
     public int Quantity { get; private set; }
-    public decimal UnitPriceAmount { get; private set; }
+    public decimal UnitPrice { get; private set; }
 
     private OrderItem() { }
 
-    public OrderItem(Guid productId, int quantity, decimal unitPriceAmount)
+    public OrderItem(Guid productId, int quantity, decimal unitPrice)
     {
         ProductId = productId;
         Quantity = quantity;
-        UnitPriceAmount = unitPriceAmount;
+        UnitPrice = unitPrice;
     }
 
-    public static OrderItem Create(Guid productId, int quantity, decimal unitPriceAmount)
-        => new(productId, quantity, unitPriceAmount);
+    
 }

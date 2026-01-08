@@ -5,7 +5,7 @@ namespace Commerce.Infrastructure.Repositories;
 
 public class EfOrderRepository : IOrderRepository
 {
-    public async Task AddOrderAsync(Order order)
+    public void AddOrder(Order order)
     {
         throw new NotImplementedException();
     }
