@@ -9,6 +9,7 @@ using Commerce.Infrastructure.Options;
 using Commerce.Application.Interfaces.Out;
 using Commerce.Infrastructure.Storage;
 using Commerce.Infrastructure.Persistence;
+using Commerce.Infrastructure.Outbox;
 using Microsoft.EntityFrameworkCore;
 
 public static class DependencyInjection

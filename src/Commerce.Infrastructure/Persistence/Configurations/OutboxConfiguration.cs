@@ -1,7 +1,7 @@
 namespace Commerce.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Commerce.Infrastructure.Persistence.Outbox;
+using Commerce.Domain.Outbox;
 
 public sealed class OutboxConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {
@@ -11,6 +11,7 @@ public sealed class OutboxConfiguration : IEntityTypeConfiguration<OutboxMessage
         builder.Property(c => c.Type).IsRequired();
         builder.Property(c => c.Payload).IsRequired();
         builder.Property(c => c.OccurredAtUtc).IsRequired();
-        builder.HasIndex(x => x.DispatchedAtUtc);
+        builder.Property(c => c.DispatchedAtUtc);
+        builder.HasIndex(c => new {c.DispatchedAtUtc, c.OccurredAtUtc});
     }
 }

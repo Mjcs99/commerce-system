@@ -1,4 +1,4 @@
-namespace Commerce.Infrastructure.Persistence.Outbox;
+namespace Commerce.Domain.Outbox;
 public sealed class OutboxMessage
 {
     public Guid Id { get; init; } = Guid.NewGuid();
@@ -9,4 +9,9 @@ public sealed class OutboxMessage
     public DateTime OccurredAtUtc { get; init; } = DateTime.UtcNow;
 
     public DateTime? DispatchedAtUtc { get; set; }    
+
+    public void MarkProcessed(DateTime processedAtUtc)
+    {
+        DispatchedAtUtc = processedAtUtc;
+    }
 }
