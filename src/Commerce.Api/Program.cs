@@ -5,14 +5,14 @@ using Commerce.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
-
+using Commerce.Api.Outbox;
 
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 Console.WriteLine($"ENV = {builder.Environment.EnvironmentName}");
 Console.WriteLine($"Swagger:ClientId = {builder.Configuration["Swagger:ClientId"]}");
-
+builder.Services.AddHostedService<OutboxPublisherHostedService>();
 builder.Services.AddInfrastructureServices(builder.Configuration)
                 .AddApplicationServices();
 builder.Services
