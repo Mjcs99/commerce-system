@@ -11,7 +11,8 @@ using Commerce.Infrastructure.Storage;
 using Commerce.Infrastructure.Persistence;
 using Commerce.Infrastructure.Outbox;
 using Microsoft.EntityFrameworkCore;
-
+using Commerce.Infrastructure.Messaging;
+using Azure.Messaging.ServiceBus;
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(
@@ -30,7 +31,18 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, EfOrderRepository>();
         services.AddScoped<ICustomerRepository, EfCustomerRepository>();
         services.AddScoped<IOutbox, EfOutbox>();
-        services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+        services.AddScoped<IUnitOfWork, EfUnitOfWork>();    
+        // Fix 
+        services.AddSingleton(_ => new ServiceBusClient(configuration["ServiceBus:ConnectionString"]));
+        services.AddSingleton<IMessageBus, AzureServiceBusMessageBus>();
+        services.Configure<ServiceBusOptions>(
+            "OrderPlaced",
+            configuration.GetSection("AzureServiceBus:OrderPlaced"));
+
+        services.Configure<ServiceBusOptions>(
+            "Email",
+            configuration.GetSection("AzureServiceBus:Email"));
+ 
         return services;
     }
 }

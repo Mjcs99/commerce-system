@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Commerce.Application.Interfaces.In.Outbox;
 using Commerce.Application.Interfaces.Out;
 
@@ -19,8 +20,8 @@ public sealed class OutboxPublisher : IOutboxPublisher
     public async Task<int> PublishPendingAsync(CancellationToken stoppingToken)
     {
         var messages = await _efOutbox.GetUnprocessedAsync(10, stoppingToken);
-        foreach (var message in messages) await _bus.PublishAsync(message.Type, message.Payload, stoppingToken);
-        _efOutbox.MarkProcessedAsync(messages, DateTime.UtcNow);
+        foreach (var message in messages) await _bus.PublishAsync(message.Id, message.Type, message.Payload, stoppingToken);
+        _efOutbox.MarkProcessed(messages, DateTime.UtcNow);
         await _unitOfWork.SaveChangesAsync(stoppingToken);
         return messages.Count;
     }

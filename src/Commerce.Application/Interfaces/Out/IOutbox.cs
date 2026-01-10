@@ -4,5 +4,5 @@ public interface IOutbox
 {
     void Enqueue(string type, string payload);
     Task<IReadOnlyList<OutboxMessage>> GetUnprocessedAsync(int take, CancellationToken ct);
-    public void MarkProcessedAsync(IReadOnlyList<OutboxMessage> messages, DateTime proccessedAtUtc);
+    public void MarkProcessed(IReadOnlyList<OutboxMessage> messages, DateTime proccessedAtUtc);
 }

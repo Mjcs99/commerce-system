@@ -35,6 +35,7 @@ Thumbs.db
 
 appsettings.Local.json
 appsettings.*.Secrets.json
+appsettings.Development.json
 .env
 
 ####################################
@@ -54,3 +55,4 @@ appsettings.*.Secrets.json
 ####################################
 
 src/Commerce.Api/*.db
+

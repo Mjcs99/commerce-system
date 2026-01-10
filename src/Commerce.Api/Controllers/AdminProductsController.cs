@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Commerce.Application.Interfaces;
+using Commerce.Application.Interfaces.In;
 using Commerce.Application.Products.Commands;
 using Commerce.Contracts.Products;
 using Commerce.Application.Products.Results;
