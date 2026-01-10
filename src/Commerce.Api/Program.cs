@@ -1,17 +1,21 @@
 using Commerce.Application.Services;
+using Commerce.Application.Services.Outbox;
 using Commerce.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 using Commerce.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
 using Commerce.Api.Outbox;
-
-using Microsoft.Extensions.DependencyInjection;
-
+using Commerce.Application.Interfaces.In.Outbox;
+using Commerce.Api.Messaging;
+using Commerce.Application.Interfaces.In;
+// Come clean up
 var builder = WebApplication.CreateBuilder(args);
 Console.WriteLine($"ENV = {builder.Environment.EnvironmentName}");
 Console.WriteLine($"Swagger:ClientId = {builder.Configuration["Swagger:ClientId"]}");
+builder.Services.AddScoped<IOutboxPublisher, OutboxPublisher>();
+builder.Services.AddHostedService<EmailConsumerHostedService>();
+builder.Services.AddHostedService<OrdersConsumerHostedService>();
 builder.Services.AddHostedService<OutboxPublisherHostedService>();
 builder.Services.AddInfrastructureServices(builder.Configuration)
                 .AddApplicationServices();
@@ -19,6 +23,7 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
+builder.Services.AddScoped<IIntegrationEventHandler, OrderPlacedEventHandler>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddApiVersioning();

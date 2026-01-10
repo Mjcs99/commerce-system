@@ -9,8 +9,8 @@ public class CommerceDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Category => Set<Category>();
     public DbSet<Customer> Customer => Set<Customer>();
-    public DbSet<Order> Order => Set<Order>();
-    public DbSet<InventoryItem> InventoryItem => Set<InventoryItem>();
+    public DbSet<Order> Orders => Set<Order>();
+    public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(CommerceDbContext).Assembly);

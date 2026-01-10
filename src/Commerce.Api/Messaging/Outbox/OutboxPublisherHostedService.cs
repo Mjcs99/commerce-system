@@ -1,6 +1,4 @@
 using Commerce.Application.Interfaces.In.Outbox;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.Extensions.Hosting;
 
 namespace Commerce.Api.Outbox;
 
@@ -15,16 +13,21 @@ public class OutboxPublisherHostedService : BackgroundService
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation("Outbox publisher hosted service started.");
         while (!stoppingToken.IsCancellationRequested)
         {
             using var scope = _services.CreateScope();
             
             var publisher = scope.ServiceProvider.GetRequiredService<IOutboxPublisher>();
 
-            var count = await publisher.PublishPendingAsync(stoppingToken);
-
+            var published = await publisher.PublishPendingAsync(stoppingToken);
+            if (published > 0)
+            {
+                _logger.LogInformation("Outbox publisher published {published} message(s).", published);
+            }
+            // Fix for when swapping to live db
             // if work was done, run again right away
-            var delay = count > 0 ? TimeSpan.FromMilliseconds(50)
+            var delay = published > 0 ? TimeSpan.FromMilliseconds(50)
                                 : TimeSpan.FromSeconds(1);
 
             await Task.Delay(delay, stoppingToken);

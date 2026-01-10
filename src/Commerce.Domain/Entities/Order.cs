@@ -35,4 +35,17 @@ public sealed class Order
             unitPrice
         ));
     }
+    public void UpdateStatus()
+    {
+        if(Status is OrderStatus.Cancelled) throw new InvalidOperationException("Cancelled orders cannot update.");
+        if(Status is OrderStatus.Delivered) throw new InvalidOperationException("Delivered orders cannot update.");
+        
+        Status = Status switch
+        {
+            OrderStatus.Pending => OrderStatus.Processing,
+            OrderStatus.Processing => OrderStatus.Shipped,
+            OrderStatus.Shipped => OrderStatus.Delivered,
+            _ => throw new InvalidOperationException($"Cannot update from status {Status}.")
+        };
+    }
 }

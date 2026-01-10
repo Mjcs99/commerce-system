@@ -8,8 +8,7 @@ using Commerce.Application.Orders.Results;
 using Commerce.Domain.Entities;
 using Commerce.Application.Exceptions;
 using System.Text.Json;
-using Commerce.Contracts.Orders;
-
+using Commerce.Contracts.IntegrationContracts.Orders;
 
 public class OrderService : IOrderService
 {
