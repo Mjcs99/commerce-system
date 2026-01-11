@@ -38,6 +38,9 @@ appsettings.*.Secrets.json
 appsettings.Development.json
 .env
 
+src/Commerce.Api/appsettings.Development.json
+src/Commerce.Api/appsettings.*.Secrets.json
+
 ####################################
 # Rider / VS Code
 ####################################
