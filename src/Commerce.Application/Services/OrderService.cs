@@ -32,15 +32,16 @@ public class OrderService : IOrderService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<CreateOrderResult> CreateOrderAsync(CreateOrderCommand command)
+    public async Task<CreateOrderResult> CreateOrderAsync(CreateOrderCommand command, CancellationToken ct)
     {
         if (command.Quantity <= 0)
             throw new ValidationException("Quantity must be greater than 0.");
 
-        var product = await _productRepository.GetProductByIdAsync(command.ProductId)
+        var product = await _productRepository.GetProductByIdAsync(command.ProductId, ct)
             ?? throw new NotFoundException($"Product with ID: {command.ProductId} not found");
 
         var order = Order.Create(command.CustomerId);
+        
         order.AddItem(command.ProductId, command.Quantity, product.PriceAmount);
 
         _orderRepository.AddOrder(order);
@@ -54,7 +55,7 @@ public class OrderService : IOrderService
 
         _outbox.Enqueue("OrderPlaced", JsonSerializer.Serialize(evt));
 
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return new CreateOrderResult(true, order.Id);
     }

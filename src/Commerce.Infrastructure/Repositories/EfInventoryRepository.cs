@@ -15,11 +15,7 @@ public sealed class EfInventoryRepository : IInventoryRepository
     public async Task ReserveAsync(Guid productId, int quantity, CancellationToken ct)
     {
         var inventory = await _db.InventoryItems
-            .SingleOrDefaultAsync(i => i.ProductId == productId, ct);
-
-        if (inventory is null)
-            throw new InvalidOperationException($"Inventory not found for product {productId}");
-
+            .SingleOrDefaultAsync(i => i.ProductId == productId, ct) ?? throw new InvalidOperationException($"Inventory not found for product {productId}");
         inventory.Reserve(quantity);
     }
 }

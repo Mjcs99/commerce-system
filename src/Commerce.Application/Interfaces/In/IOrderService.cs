@@ -5,5 +5,5 @@ namespace Commerce.Application.Interfaces.In;
 
 public interface IOrderService
 {
-    Task<CreateOrderResult> CreateOrderAsync(CreateOrderCommand command);
+    Task<CreateOrderResult> CreateOrderAsync(CreateOrderCommand command, CancellationToken ct);
 }

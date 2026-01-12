@@ -22,9 +22,9 @@ public class ProductService : IProductService
         _imageStorage = imageStorage;
     }
 
-    public async Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query)
+    public async Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query, CancellationToken ct)
     {
-        var (products, totalCount) = await _repo.GetPagedAsync(query.SearchTerm, query.CategorySlug, query.Page, query.PageSize);
+        var (products, totalCount) = await _repo.GetPagedAsync(query.SearchTerm, query.CategorySlug, query.Page, query.PageSize, ct);
 
         var results = products.Select(p =>
         {
@@ -36,9 +36,9 @@ public class ProductService : IProductService
     }
 
 
-    public async Task<ProductResult?> GetProductByIdAsync(Guid productId)
+    public async Task<ProductResult?> GetProductByIdAsync(Guid productId, CancellationToken ct)
     {
-        var product = await _repo.GetProductByIdAsync(productId);
+        var product = await _repo.GetProductByIdAsync(productId, ct);
         var primaryImage = product?.GetPrimaryImage();
         return product is null ? null : Map(product, _imageUriBuilder.BuildUri(primaryImage?.BlobName, 3600));
     }
@@ -46,18 +46,18 @@ public class ProductService : IProductService
     private static ProductResult Map(Product p, string? imageUri)
         => new(p.Id, p.Name, p.Sku, p.PriceAmount, imageUri);
 
-    public async Task<ProductResult?> GetProductBySkuAsync(string sku)
+    public async Task<ProductResult?> GetProductBySkuAsync(string sku, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(sku)) return null; 
-        var product = await _repo.GetProductBySkuAsync(sku);
+        var product = await _repo.GetProductBySkuAsync(sku, ct);
         return product is null ? null : Map(product, _imageUriBuilder.BuildUri(product.Id.ToString(), 3600));
     }
 
-    public async Task<AddProductResult> AddProductAsync(CreateProductCommand command)
+    public async Task<AddProductResult> AddProductAsync(CreateProductCommand command, CancellationToken ct)
     {
         try
         {
-            var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug);
+            var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug, ct);
             if (categoryId is null)
                 throw new InvalidOperationException("Category not found.");
 
@@ -67,7 +67,7 @@ public class ProductService : IProductService
                 categoryId: categoryId.Value,
                 priceAmount: command.Price);
 
-            await _repo.CreateAsync(product);
+            await _repo.CreateAsync(product, ct);
             return new AddProductResult(true, product.Id, null);
         }
         catch (Exception ex)
@@ -76,9 +76,9 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<AddImageResult> AddImageAsync(AddProductImageCommand command)
+    public async Task<AddImageResult> AddImageAsync(AddProductImageCommand command, CancellationToken ct)
     {
-        var product = await _repo.GetProductByIdAsync(command.ProductId);
+        var product = await _repo.GetProductByIdAsync(command.ProductId, ct);
         if (product is null)
             return new AddImageResult(false, null, "Product not found.");
 
@@ -103,7 +103,8 @@ public class ProductService : IProductService
                 productId: command.ProductId,
                 blobName: blobName,
                 imageId: imageId,
-                makePrimary: command.IsPrimary
+                makePrimary: command.IsPrimary,
+                ct
             );
 
             return new AddImageResult(

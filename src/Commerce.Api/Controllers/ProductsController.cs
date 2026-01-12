@@ -3,7 +3,6 @@ using Commerce.Contracts.Common;
 using Commerce.Application.Interfaces.In;
 using Commerce.Application.Products.Queries;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Commerce.Api.Controllers;
 
@@ -23,8 +22,8 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<PagedResult<ProductDto>>> GetAllProductsAsync(
         [FromQuery] string? searchTerm,
         [FromQuery] string? categorySlug,
-        [FromQuery] int page = 1
-        )
+        CancellationToken ct,
+        [FromQuery] int page = 1)
     {
         const int pageSize = 20;
         var result = await _productService.GetProductsAsync(
@@ -33,7 +32,7 @@ public class ProductsController : ControllerBase
                 string.IsNullOrWhiteSpace(categorySlug) ? null : categorySlug.Trim(),
                 Math.Max(page, 1),
                 pageSize
-            ));
+            ), ct);
 
         var dtos = result.Items.Select(p => new ProductDto(
             p.Id,
@@ -51,17 +50,17 @@ public class ProductsController : ControllerBase
         ));
     }
 
-
     [HttpGet("{id:guid}", Name = "GetProductById")]
-    public async Task<ActionResult<ProductDto>> GetProductByIdAsync([FromRoute] Guid id)
+    public async Task<ActionResult<ProductDto>> GetProductByIdAsync([FromRoute] Guid id, CancellationToken ct)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await _productService.GetProductByIdAsync(id, ct);
         return product is null ? NotFound() : Ok(product);
     }
+
     [HttpGet("by-sku/{sku}")]
-    public async Task<ActionResult<ProductDto>> GetProductBySkuAsync(string sku)
+    public async Task<ActionResult<ProductDto>> GetProductBySkuAsync(string sku, CancellationToken ct)
     {
-        var product = await _productService.GetProductBySkuAsync(sku);
+        var product = await _productService.GetProductBySkuAsync(sku, ct);
         return product is null ? NotFound() : Ok(product);
     }
 }

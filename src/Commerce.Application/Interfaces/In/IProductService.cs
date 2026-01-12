@@ -7,9 +7,9 @@ namespace Commerce.Application.Interfaces.In;
 
 public interface IProductService
 {
-    Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query);
-    Task<AddImageResult> AddImageAsync(AddProductImageCommand command);
-    Task<AddProductResult> AddProductAsync(CreateProductCommand command);
-    Task<ProductResult?> GetProductByIdAsync(Guid productId);
-    Task<ProductResult?> GetProductBySkuAsync(string sku);
+    Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query, CancellationToken ct);
+    Task<AddImageResult> AddImageAsync(AddProductImageCommand command, CancellationToken ct);
+    Task<AddProductResult> AddProductAsync(CreateProductCommand command, CancellationToken ct);
+    Task<ProductResult?> GetProductByIdAsync(Guid productId, CancellationToken ct);
+    Task<ProductResult?> GetProductBySkuAsync(string sku, CancellationToken ct);
 }
