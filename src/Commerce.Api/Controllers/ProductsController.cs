@@ -19,7 +19,7 @@ public class ProductsController : ControllerBase
     }
     // Change to ProductSummary dto (browsing) and implement ProductDetail dto for product page
     [HttpGet]
-    public async Task<ActionResult<PagedResult<ProductDto>>> GetAllProductsAsync(
+    public async Task<ActionResult<PagedResult<ProductSummaryDto>>> GetAllProductsAsync(
         [FromQuery] string? searchTerm,
         [FromQuery] string? categorySlug,
         CancellationToken ct,
@@ -34,7 +34,7 @@ public class ProductsController : ControllerBase
                 pageSize
             ), ct);
 
-        var dtos = result.Items.Select(p => new ProductDto(
+        var dtos = result.Items.Select(p => new ProductSummaryDto(
             p.Id,
             p.Sku,
             p.Name,
@@ -42,7 +42,7 @@ public class ProductsController : ControllerBase
             p.PrimaryImageUrl
         )).ToList();
 
-        return Ok(new PagedResult<ProductDto>(
+        return Ok(new PagedResult<ProductSummaryDto>(
             dtos,
             page,
             result.TotalCount,
@@ -50,15 +50,21 @@ public class ProductsController : ControllerBase
         ));
     }
 
+    [HttpGet]
+    public async Task<ActionResult<ProductDetailsDto>> GetProductDetailsByIdAsync([FromRoute] Guid id, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpGet("{id:guid}", Name = "GetProductById")]
-    public async Task<ActionResult<ProductDto>> GetProductByIdAsync([FromRoute] Guid id, CancellationToken ct)
+    public async Task<ActionResult<ProductSummaryDto>> GetProductByIdAsync([FromRoute] Guid id, CancellationToken ct)
     {
         var product = await _productService.GetProductByIdAsync(id, ct);
         return product is null ? NotFound() : Ok(product);
     }
 
     [HttpGet("by-sku/{sku}")]
-    public async Task<ActionResult<ProductDto>> GetProductBySkuAsync(string sku, CancellationToken ct)
+    public async Task<ActionResult<ProductSummaryDto>> GetProductBySkuAsync(string sku, CancellationToken ct)
     {
         var product = await _productService.GetProductBySkuAsync(sku, ct);
         return product is null ? NotFound() : Ok(product);
