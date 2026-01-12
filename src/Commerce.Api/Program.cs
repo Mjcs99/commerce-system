@@ -9,6 +9,7 @@ using Commerce.Api.Outbox;
 using Commerce.Application.Interfaces.In.Outbox;
 using Commerce.Api.Messaging;
 using Commerce.Application.Interfaces.In;
+using Commerce.Application.Handlers;
 // Come clean up
 var builder = WebApplication.CreateBuilder(args);
 Console.WriteLine($"ENV = {builder.Environment.EnvironmentName}");
@@ -24,7 +25,7 @@ builder.Services
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
 builder.Services.AddScoped<IIntegrationEventHandler, OrderPlacedEventHandler>();
-
+builder.Services.AddScoped<IIntegrationEventHandler, OrderProcessedEmailHandler>();
 builder.Services.AddAuthorization();
 builder.Services.AddApiVersioning();
 

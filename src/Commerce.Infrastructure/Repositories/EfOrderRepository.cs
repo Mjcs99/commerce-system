@@ -24,7 +24,4 @@ public class EfOrderRepository : IOrderRepository
             .Include(o => o.Items)              
             .SingleOrDefaultAsync(o => o.Id == id, ct);
     }
-
-    
-
 }

@@ -7,10 +7,12 @@ public sealed class EmailConsumerHostedService : ServiceBusConsumerHostedService
 {
     public EmailConsumerHostedService(
         IServiceProvider services,
-        ILogger<OrdersConsumerHostedService> logger,
+        ILogger<EmailConsumerHostedService> logger,
         ServiceBusClient client,
         IOptionsMonitor<ServiceBusOptions> options)
         : base(services, logger, client, options) { }
 
     protected override string OptionsName => "Email";
 }
+
+

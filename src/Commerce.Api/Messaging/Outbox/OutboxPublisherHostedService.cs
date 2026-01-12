@@ -21,6 +21,7 @@ public class OutboxPublisherHostedService : BackgroundService
             var publisher = scope.ServiceProvider.GetRequiredService<IOutboxPublisher>();
 
             var published = await publisher.PublishPendingAsync(stoppingToken);
+            
             if (published > 0)
             {
                 _logger.LogInformation("Outbox publisher published {published} message(s).", published);

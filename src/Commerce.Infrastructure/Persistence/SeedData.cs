@@ -16,7 +16,7 @@ public static class SeedData
         var productTypes = new[] { "T-Shirt", "Mug", "Sticker", "Hoodie", "Cap", "Poster" };
 
         var products = new List<Product>(productTypes.Length * count);
-
+        var inventory = new List<InventoryItem>(productTypes.Length * count);
         var skuCounter = 1;
         foreach (var type in productTypes)
         {
@@ -27,12 +27,16 @@ public static class SeedData
                 var name = $"{type} {i}";
                 var sku = $"SKU-{skuCounter:D4}";    
                 var price = Math.Round(5m + (i * 0.75m), 2);
-
-                products.Add(Product.Create(sku, name, category.Id, price));
+                var product = Product.Create(sku, name, category.Id, price);
+                products.Add(product);
+                inventory.Add(new InventoryItem{
+                    ProductId = product.Id,
+                    QuantityAvailable = 10
+                });
                 skuCounter++;
             }
         }
-
+        db.InventoryItems.AddRange(inventory);
         db.Products.AddRange(products);
         await db.SaveChangesAsync();
     }

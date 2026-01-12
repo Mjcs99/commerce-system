@@ -31,7 +31,8 @@ public abstract class ServiceBusConsumerHostedService : BackgroundService
         var options = _optionsMonitor.Get(OptionsName);
 
         _logger.LogInformation(
-            "Starting OrdersConsumerHostedService. Topic={Topic} Subscription={Subscription}",
+            "Starting {OptionsName}HostedService. Topic={Topic} Subscription={Subscription}",
+            OptionsName,
             options.OrdersTopic,
             options.Subscription);
 
@@ -41,8 +42,8 @@ public abstract class ServiceBusConsumerHostedService : BackgroundService
             new ServiceBusProcessorOptions
             {
                 AutoCompleteMessages = false,   
-                MaxConcurrentCalls = 4,         
-                PrefetchCount = 50              
+                MaxConcurrentCalls = 1,         
+                PrefetchCount = 0              
             });
 
         _processor.ProcessMessageAsync += ProcessMessageAsync;
@@ -93,6 +94,16 @@ public abstract class ServiceBusConsumerHostedService : BackgroundService
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {
             // cancellation
+        }
+        catch (Azure.RequestFailedException ex) when (ex.Status == 429)
+        {
+            _logger.LogWarning(ex, "Email throttled (429). Abandoning message for retry. MessageId={MessageId}", messageId);
+
+
+            await Task.Delay(TimeSpan.FromSeconds(5), ct);
+
+            await args.AbandonMessageAsync(args.Message, cancellationToken: ct);
+            return;
         }
         catch (Exception ex)
         {
