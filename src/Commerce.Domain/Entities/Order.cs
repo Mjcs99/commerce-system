@@ -2,7 +2,7 @@ namespace Commerce.Domain.Entities;
 public enum OrderStatus
 {
     Pending,
-    Processing,
+    Processed,
     Shipped,
     Delivered,
     Cancelled
@@ -42,8 +42,8 @@ public sealed class Order
         
         Status = Status switch
         {
-            OrderStatus.Pending => OrderStatus.Processing,
-            OrderStatus.Processing => OrderStatus.Shipped,
+            OrderStatus.Pending => OrderStatus.Processed,
+            OrderStatus.Processed => OrderStatus.Shipped,
             OrderStatus.Shipped => OrderStatus.Delivered,
             _ => throw new InvalidOperationException($"Cannot update from status {Status}.")
         };

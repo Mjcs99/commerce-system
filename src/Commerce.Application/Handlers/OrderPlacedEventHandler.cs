@@ -3,6 +3,7 @@ using Commerce.Application.Exceptions;
 using Commerce.Application.Interfaces.In;
 using Commerce.Application.Interfaces.Out;
 using Commerce.Contracts.IntegrationContracts.Orders;
+using Commerce.Domain.Entities;
 
 namespace Commerce.Application.Services;
 
@@ -58,7 +59,7 @@ public class OrderPlacedEventHandler : IIntegrationEventHandler
         );
 
         _outbox.Enqueue("OrderProcessed", JsonSerializer.Serialize(evtProcessed));
-        
+
         await _unitOfWork.SaveChangesAsync(ct);
     }
 }

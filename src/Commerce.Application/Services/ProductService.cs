@@ -90,7 +90,7 @@ public class ProductService : IProductService
             command.Content.Position = 0;
 
         BlobUploadResult upload;
-        // ***Remember to failure test w/ docker compose***
+        // ***Remember to failure test***
         try
         {   
             upload = await _imageStorage.UploadAsync(

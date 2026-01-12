@@ -1,4 +1,6 @@
 namespace Commerce.Application.Services;
+
+using Commerce.Application.Exceptions;
 using Commerce.Application.Interfaces.In;
 using Commerce.Application.Interfaces.Out;
 using Commerce.Domain.Entities;
@@ -27,4 +29,9 @@ public class CustomerService : ICustomerService
         }
         return customer;
     }
+    public async Task<Customer> GetCustomerByIdAsync(Guid customerId){
+
+        return await _customerRepository.GetCustomerByIdAsync(customerId) ?? throw new NotFoundException($"Customer not found - {customerId}");
+    }
+
 }
