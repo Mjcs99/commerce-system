@@ -32,6 +32,7 @@ public class ProductService : IProductService
             var imageUri = _imageUriBuilder.BuildUri(primaryImage?.BlobName, 3600);
             return Map(p, imageUri);
         }).ToList();
+        
         return new PagedQueryResult<ProductResult>(results, totalCount);
     }
 
