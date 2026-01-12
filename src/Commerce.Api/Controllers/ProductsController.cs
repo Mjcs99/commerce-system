@@ -17,7 +17,7 @@ public class ProductsController : ControllerBase
     {
         _productService = productService;
     }
-
+    // Change to ProductSummary dto (browsing) and implement ProductDetail dto for product page
     [HttpGet]
     public async Task<ActionResult<PagedResult<ProductDto>>> GetAllProductsAsync(
         [FromQuery] string? searchTerm,
