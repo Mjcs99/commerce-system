@@ -10,6 +10,7 @@ using Commerce.Application.Interfaces.In.Outbox;
 using Commerce.Api.Messaging;
 using Commerce.Application.Interfaces.In;
 using Commerce.Application.Handlers;
+using Commerce.Api.Exceptions;
 // Come clean up
 var builder = WebApplication.CreateBuilder(args);
 Console.WriteLine($"ENV = {builder.Environment.EnvironmentName}");
@@ -28,9 +29,15 @@ builder.Services.AddScoped<IIntegrationEventHandler, OrderPlacedEventHandler>();
 builder.Services.AddScoped<IIntegrationEventHandler, OrderProcessedEmailHandler>();
 builder.Services.AddAuthorization();
 builder.Services.AddApiVersioning();
-
 builder.Services.AddControllers();
-
+builder.Services.AddProblemDetails(configure =>
+{
+    configure.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+    };
+});
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Swagger UI via Swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -92,7 +99,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.MapControllers();
 

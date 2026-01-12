@@ -50,7 +50,7 @@ public class ProductsController : ControllerBase
         ));
     }
 
-    [HttpGet]
+    [HttpGet("{id:guid}/details")]
     public async Task<ActionResult<ProductDetailsDto>> GetProductDetailsByIdAsync([FromRoute] Guid id, CancellationToken ct)
     {
         throw new NotImplementedException();
