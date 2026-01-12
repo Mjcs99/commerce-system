@@ -4,7 +4,6 @@ using Commerce.Application.Interfaces.Out;
 using Commerce.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using Azure.Identity;
-using System.Runtime.InteropServices;
 namespace Commerce.Infrastructure.Storage;
 
 public sealed class AzureBlobStorage : IProductImageStorage

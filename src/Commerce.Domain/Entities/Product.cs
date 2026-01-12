@@ -3,12 +3,12 @@ namespace Commerce.Domain.Entities;
 public sealed class Product
 {
     private readonly List<ProductImage> _images = new();
-    public IReadOnlyCollection<ProductImage> Images => _images.ToList();
+    public IReadOnlyCollection<ProductImage> Images => _images;
 
     public Guid Id { get; private set; }
     public string Sku { get; private set; } = null!;
     public string Name { get; private set; } = null!;
-    public Guid? CategoryId { get; private set; }
+    public Guid CategoryId { get; private set; }
     public Category? Category { get; private set; }
     public decimal PriceAmount { get; private set; }
 
