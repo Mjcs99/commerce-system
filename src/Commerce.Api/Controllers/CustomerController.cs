@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Commerce.Application.Interfaces.In;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+
 namespace Commerce.Api.Controllers;
+
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/customer")]
@@ -15,12 +17,10 @@ public class CustomerController : ControllerBase
         _customerService = customerService;
     }
     
-    
     [Authorize]
     [HttpPost("me")]
-    public async Task<IActionResult> GetOrCreateCustomer()
+    public async Task<IActionResult> GetOrCreateCustomer(CancellationToken ct)
     {
-        
         foreach (var claim in User.Claims)
         {
             Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
@@ -40,8 +40,7 @@ public class CustomerController : ControllerBase
         }
         var firstName = User.FindFirstValue(ClaimTypes.GivenName);
         var lastName = User.FindFirstValue(ClaimTypes.Surname);
-        var customer = await _customerService.GetOrCreateCustomerAsync(externalUserId, email, firstName, lastName);
-
+        var customer = await _customerService.GetOrCreateCustomerAsync(externalUserId, email, firstName, lastName, ct);
         return Ok(customer);
     }
 }

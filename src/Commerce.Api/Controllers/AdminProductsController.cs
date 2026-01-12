@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Commerce.Application.Interfaces;
+using Commerce.Application.Interfaces.In;
 using Commerce.Application.Products.Commands;
 using Commerce.Contracts.Products;
 using Commerce.Application.Products.Results;
@@ -10,8 +10,9 @@ namespace Commerce.Api.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
+[Authorize(Roles = "Admin")] 
 [Route("api/v{version:apiVersion}/admin/products")]
-//[Authorize(Policy = "AdminOnly")] 
+
 public class AdminProductsController : ControllerBase
 {
     private readonly IProductService _productService;
@@ -20,17 +21,19 @@ public class AdminProductsController : ControllerBase
     {
         _productService = productService;
     }
-    // What do i want this to return? Come back to this later
+
     [HttpPost]
     public async Task<ActionResult<ProductDto>> AddProductAsync([FromBody] CreateProductDto dto, CancellationToken ct)
     {
         var result = await _productService.AddProductAsync(
-            new CreateProductCommand(dto.Name, dto.Sku, dto.CategorySlug, dto.Price));
+            new CreateProductCommand(dto.Name, dto.Sku, dto.CategorySlug, dto.Price),
+            ct
+        );
 
         if (!result.Success)
             return BadRequest(result.ErrorMessage);
 
-        var product = await _productService.GetProductByIdAsync(result.ProductId);
+        var product = await _productService.GetProductByIdAsync(result.ProductId, ct);
         if (product is null)
             return Problem("Product was created but could not be loaded.");
 
@@ -60,12 +63,11 @@ public class AdminProductsController : ControllerBase
                 stream,
                 Path.GetFileName(request.File.FileName),
                 request.File.ContentType,
-                request.IsPrimary));
+                request.IsPrimary), ct);
 
         if (!result.Success)
             return BadRequest(result);
 
         return Ok(result);
     }
-
 }

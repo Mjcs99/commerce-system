@@ -34,8 +34,10 @@ Thumbs.db
 ####################################
 
 appsettings.Local.json
-appsettings.*.Secrets.json
 .env
+
+src/*/appsettings.Development.json
+src/*/appsettings.*.Secrets.json
 
 ####################################
 # Rider / VS Code
@@ -54,3 +56,4 @@ appsettings.*.Secrets.json
 ####################################
 
 src/Commerce.Api/*.db
+
