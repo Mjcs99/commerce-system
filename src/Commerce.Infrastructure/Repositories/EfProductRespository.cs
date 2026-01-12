@@ -18,10 +18,10 @@ public class EfProductRepository : IProductRepository
     }
 
 
-    public async Task<Guid> CreateAsync(Product product)
+    public async Task<Guid> CreateAsync(Product product, CancellationToken ct)
     {
         _db.Products.Add(product);
-        await _db.SaveChangesAsync();
+        await _db.SaveChangesAsync(ct);
         return product.Id;
     }
 
@@ -29,7 +29,8 @@ public class EfProductRepository : IProductRepository
         string? searchTerm,
         string? categorySlug,
         int page,
-        int pageSize)
+        int pageSize,
+        CancellationToken ct)
     {
         page = Math.Max(page, 1);
         pageSize = Math.Clamp(pageSize, 1, 200);
@@ -42,7 +43,7 @@ public class EfProductRepository : IProductRepository
                 .AsNoTracking()
                 .Where(c => c.Slug == categorySlug) 
                 .Select(c => (Guid?)c.Id)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(ct);
 
             if (categoryId is null)
                 return (Array.Empty<Product>(), 0);
@@ -60,25 +61,23 @@ public class EfProductRepository : IProductRepository
                 EF.Functions.Like(p.Sku, $"%{searchTerm}%"));
         }
 
-        var totalCount = await baseQuery.CountAsync();
+        var totalCount = await baseQuery.CountAsync(cancellationToken: ct);
 
         var items = await baseQuery
             .OrderBy(p => p.Name).ThenBy(p => p.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Include(p => p.Images.Where(i => i.IsPrimary))  
-            .ToListAsync();
+            .ToListAsync(ct);
 
         return (items, totalCount);
     }
 
-
-
-    public async Task AddImageAsync(Guid productId, string blobName, Guid imageId, bool makePrimary)
+    public async Task AddImageAsync(Guid productId, string blobName, Guid imageId, bool makePrimary, CancellationToken ct)
     {
         var product = await _db.Products
             .Include(p => p.Images)
-            .SingleOrDefaultAsync(p => p.Id == productId);
+            .SingleOrDefaultAsync(p => p.Id == productId, ct);
 
         if (product is null)
             throw new InvalidOperationException("Product not found.");
@@ -86,24 +85,24 @@ public class EfProductRepository : IProductRepository
         var newImage = product.AddImage(blobName, imageId, makePrimary);
         _db.Entry(newImage).State = EntityState.Added;
 
-        await _db.SaveChangesAsync();
+        await _db.SaveChangesAsync(ct);
 
     }
 
-    public async Task<Product?> GetProductByIdAsync(Guid id)
+    public async Task<Product?> GetProductByIdAsync(Guid id, CancellationToken ct)
         => await _db.Products
-            .SingleOrDefaultAsync(p => p.Id == id);
+            .SingleOrDefaultAsync(p => p.Id == id, ct);
 
-    public async Task<Product?> GetProductBySkuAsync(string sku)
+    public async Task<Product?> GetProductBySkuAsync(string sku, CancellationToken ct)
         => await _db.Products
             .AsNoTracking()
-            .SingleOrDefaultAsync(p => p.Sku == sku);
+            .SingleOrDefaultAsync(p => p.Sku == sku, ct);
 
-    public async Task<Guid?> GetCategoryIdBySlugAsync(string categorySlug)
+    public async Task<Guid?> GetCategoryIdBySlugAsync(string categorySlug, CancellationToken ct)
     {
         var category = await _db.Category
             .AsNoTracking()
-            .SingleOrDefaultAsync(c => c.Slug == categorySlug);
+            .SingleOrDefaultAsync(c => c.Slug == categorySlug, ct);
         return category?.Id;
     }
 }

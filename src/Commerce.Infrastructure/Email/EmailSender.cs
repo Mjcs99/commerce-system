@@ -36,12 +36,13 @@ public sealed class EmailSender : IEmailSender
 public async Task SendOrderConfirmationEmail(
     Guid customerId,
     Guid orderId,
-    IReadOnlyList<OrderProcessedItem> items)
+    IReadOnlyList<OrderProcessedItem> items,
+    CancellationToken ct)
 {
     if (items is null || items.Count == 0)
         throw new InvalidOperationException($"Order {orderId} had no items to email.");
 
-    var customer = await _customerService.GetCustomerByIdAsync(customerId)
+    var customer = await _customerService.GetCustomerByIdAsync(customerId, ct)
         ?? throw new InvalidOperationException($"Customer not found: {customerId}");
 
     if (string.IsNullOrWhiteSpace(customer.Email))
@@ -55,7 +56,7 @@ public async Task SendOrderConfirmationEmail(
         if (productNameById.ContainsKey(ordered.ProductId))
             continue;
 
-        var product = await _productService.GetProductByIdAsync(ordered.ProductId);
+        var product = await _productService.GetProductByIdAsync(ordered.ProductId, ct);
 
         var name = product?.Name;
         productNameById[ordered.ProductId] =
@@ -103,10 +104,9 @@ public async Task SendOrderConfirmationEmail(
         })
     );
 
-    var op = await _client.SendAsync(WaitUntil.Completed, emailMessage);
+    var op = await _client.SendAsync(WaitUntil.Completed, emailMessage, ct);
     _logger.LogInformation("Order confirmation email sent. OrderId={OrderId} CustomerId={CustomerId} OpId={OpId}",
         orderId, customerId, op.Id);
     }
-
 }
 

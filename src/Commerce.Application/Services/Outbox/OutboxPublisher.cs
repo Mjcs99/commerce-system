@@ -17,6 +17,7 @@ public sealed class OutboxPublisher : IOutboxPublisher
         _bus = bus;
         _unitOfWork = unitOfWork;
     }
+    
     public async Task<int> PublishPendingAsync(CancellationToken stoppingToken)
     {
         var messages = await _efOutbox.GetUnprocessedAsync(10, stoppingToken);

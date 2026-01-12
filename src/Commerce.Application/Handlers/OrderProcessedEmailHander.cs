@@ -28,7 +28,7 @@ public class OrderProcessedEmailHandler : IIntegrationEventHandler
                 PropertyNameCaseInsensitive = true
             }
         ) ?? throw new InvalidDataException($"Invalid Message: {payload}");
-        
-        await _emailSender.SendOrderConfirmationEmail(evt.CustomerId, evt.OrderId, evt.Items);
+
+        await _emailSender.SendOrderConfirmationEmail(evt.CustomerId, evt.OrderId, evt.Items, ct);
     }
 }
