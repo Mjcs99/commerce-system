@@ -99,7 +99,6 @@ public abstract class ServiceBusConsumerHostedService : BackgroundService
         {
             _logger.LogWarning(ex, "Email throttled (429). Abandoning message for retry. MessageId={MessageId}", messageId);
 
-
             await Task.Delay(TimeSpan.FromSeconds(5), ct);
 
             await args.AbandonMessageAsync(args.Message, cancellationToken: ct);
@@ -109,7 +108,6 @@ public abstract class ServiceBusConsumerHostedService : BackgroundService
         {
             _logger.LogError(ex, "Failed processing message. MessageId={MessageId} Type={Type}", messageId, type);       
             await DeadLetterAsync(args, "ProcessingFailed", ex.Message);
-
         }
     }
 
