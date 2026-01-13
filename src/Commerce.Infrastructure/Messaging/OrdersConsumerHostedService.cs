@@ -1,7 +1,8 @@
 using Azure.Messaging.ServiceBus;
 using Commerce.Infrastructure.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-namespace Commerce.Api.Messaging;
+namespace Commerce.Infrastructure.Messaging;
 
 public sealed class OrdersConsumerHostedService : ServiceBusConsumerHostedService
 {
