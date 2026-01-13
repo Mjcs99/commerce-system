@@ -24,7 +24,7 @@ public sealed class EfOutbox(CommerceDbContext db) : IOutbox
             .ThenBy(x => x.Id)
             .Take(take).ToListAsync(ct);
     }
-    
+
     public void MarkProcessed(IReadOnlyList<OutboxMessage> messages, DateTime proccessedAtUtc)
     {
         foreach (var message in messages)

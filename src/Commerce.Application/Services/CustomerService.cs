@@ -31,9 +31,8 @@ public class CustomerService : ICustomerService
         await _unitOfWork.SaveChangesAsync(ct);
         return customer;
     }
-    
-    public async Task<Customer> GetCustomerByIdAsync(Guid customerId, CancellationToken ct){
 
+    public async Task<Customer> GetCustomerByIdAsync(Guid customerId, CancellationToken ct){
         return await _customerRepository.GetCustomerByIdAsync(customerId, ct) ?? throw new NotFoundException($"Customer not found - {customerId}");
     }
 
