@@ -11,10 +11,10 @@ using Commerce.Api.Messaging;
 using Commerce.Application.Interfaces.In;
 using Commerce.Application.Handlers;
 using Commerce.Api.Exceptions;
-// Come clean up
+using Commerce.Application.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
-Console.WriteLine($"ENV = {builder.Environment.EnvironmentName}");
-Console.WriteLine($"Swagger:ClientId = {builder.Configuration["Swagger:ClientId"]}");
+
 builder.Services.AddScoped<IOutboxPublisher, OutboxPublisher>();
 builder.Services.AddHostedService<EmailConsumerHostedService>();
 builder.Services.AddHostedService<OrdersConsumerHostedService>();
@@ -24,7 +24,6 @@ builder.Services.AddInfrastructureServices(builder.Configuration)
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
-
 builder.Services.AddScoped<IIntegrationEventHandler, OrderPlacedEventHandler>();
 builder.Services.AddScoped<IIntegrationEventHandler, OrderProcessedEmailHandler>();
 builder.Services.AddAuthorization();
@@ -40,7 +39,6 @@ builder.Services.AddProblemDetails(configure =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Swagger UI via Swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Commerce API", Version = "v1" });
@@ -93,10 +91,9 @@ if (app.Environment.IsDevelopment())
 
         c.OAuthScopeSeparator(" ");
     });
-    
-    await SeedData.SeedProductsAsync(db, count: 10);
-    
+    await SeedData.SeedProductsAsync(db, count: 10);   
 }
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();

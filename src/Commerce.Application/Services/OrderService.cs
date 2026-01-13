@@ -41,7 +41,6 @@ public class OrderService : IOrderService
             ?? throw new NotFoundException($"Product with ID: {command.ProductId} not found");
 
         var order = Order.Create(command.CustomerId);
-        
         order.AddItem(command.ProductId, command.Quantity, product.PriceAmount);
 
         _orderRepository.AddOrder(order);
