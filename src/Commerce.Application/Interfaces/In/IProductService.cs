@@ -10,6 +10,6 @@ public interface IProductService
     Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query, CancellationToken ct);
     Task<AddImageResult> AddImageAsync(AddProductImageCommand command, CancellationToken ct);
     Task<AddProductResult> AddProductAsync(CreateProductCommand command, CancellationToken ct);
-    Task<ProductResult?> GetProductByIdAsync(Guid productId, CancellationToken ct);
-    Task<ProductResult?> GetProductBySkuAsync(string sku, CancellationToken ct);
+    Task<ProductResult> GetProductByIdAsync(Guid productId, CancellationToken ct);
+    Task<ProductResult> GetProductBySkuAsync(string sku, CancellationToken ct);
 }
