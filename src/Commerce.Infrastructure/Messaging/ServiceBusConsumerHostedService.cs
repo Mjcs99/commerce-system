@@ -1,8 +1,11 @@
 using Azure.Messaging.ServiceBus;
 using Commerce.Application.Interfaces.In;
 using Commerce.Infrastructure.Options;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-namespace Commerce.Api.Messaging;
+namespace Commerce.Infrastructure.Messaging;
 
 public abstract class ServiceBusConsumerHostedService : BackgroundService
 {
