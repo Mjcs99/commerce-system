@@ -35,3 +35,7 @@ public sealed class ServiceBusException : ExternalServiceException
 {
     public ServiceBusException(string message, Exception? inner = null) : base(message, inner) {}
 }
+public sealed class BlobStorageException : ExternalServiceException
+{
+    public BlobStorageException(string message, Exception? inner = null) : base(message, inner) {}
+}

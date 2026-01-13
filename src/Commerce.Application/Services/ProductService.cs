@@ -98,7 +98,19 @@ public class ProductService : IProductService
                 command.Content,
                 command.ContentType,
                 ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to add blob {BlobName} for ProductId {ProductId}", blobName, command.ProductId);
+            throw new BlobStorageException("Failed to upload image to blob storage.", ex);
+        }
 
+        try
+        {
             await _repo.AddImageAsync(
                 productId: command.ProductId,
                 blobName: blobName,
@@ -116,14 +128,15 @@ public class ProductService : IProductService
         {
             try
             {
-                await _imageStorage.DeleteIfExistsAsync(blobName, ct);
+                await _imageStorage.DeleteIfExistsAsync(blobName, CancellationToken.None);
             }
             catch (Exception cleanupException)
             {
                 // swallow blob storage cleanup
-                _logger.LogWarning("Failed to cleanup blob storage for image upload: {exception}", cleanupException.Message);
+                _logger.LogWarning(cleanupException, "Failed to cleanup blob {BlobName} for ProductId {ProductId}", blobName, command.ProductId);
+
             }
-            _logger.LogWarning("Failed to upload product image: {exception}", ex.Message);
+            _logger.LogWarning("Failed to upload product image: {exception}", ex);
             throw;
         }
     }
