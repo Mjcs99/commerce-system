@@ -42,7 +42,8 @@ public class AdminProductsController : ControllerBase
         return CreatedAtRoute(
             "GetProductById",
             new { version = "1.0", id = product.Id },
-            productDto);
+            productDto
+            );
     }
 
     [HttpPost("{productId:guid}/images")]

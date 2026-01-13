@@ -30,7 +30,6 @@ public class OrderController : ControllerBase
         var externalUserId = User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
         var email = User.FindFirstValue(ClaimTypes.Email);
         if (externalUserId == null || email == null) return Unauthorized();
-        // Change get or create customer ?
         var firstName = User.FindFirstValue(ClaimTypes.GivenName);
         var lastName = User.FindFirstValue(ClaimTypes.Surname);;
         var customer = await _customerService.GetOrCreateCustomerAsync(externalUserId, email, firstName, lastName, ct);
