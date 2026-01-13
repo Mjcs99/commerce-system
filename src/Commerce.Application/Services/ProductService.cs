@@ -6,6 +6,8 @@ using Commerce.Application.Products.Commands;
 using Commerce.Application.Common;
 using Commerce.Application.Images;
 using Commerce.Application.Interfaces.Out;
+using Microsoft.Extensions.Logging;
+using Commerce.Application.Exceptions;
 
 namespace Commerce.Application.Services;
 
@@ -14,66 +16,64 @@ public class ProductService : IProductService
     private readonly IProductRepository _repo;
     private readonly IProductImageUriBuilder _imageUriBuilder;
     private readonly IProductImageStorage _imageStorage;
+    private readonly ILogger<ProductService> _logger;
 
-    public ProductService(IProductRepository repo, IProductImageUriBuilder imageUriBuilder, IProductImageStorage imageStorage)
+    public ProductService(IProductRepository repo, IProductImageUriBuilder imageUriBuilder, IProductImageStorage imageStorage, ILogger<ProductService> logger)
     {
         _repo = repo;
         _imageUriBuilder = imageUriBuilder;
         _imageStorage = imageStorage;
+        _logger = logger;
     }
 
     public async Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query, CancellationToken ct)
     {
         var (products, totalCount) = await _repo.GetPagedAsync(query.SearchTerm, query.CategorySlug, query.Page, query.PageSize, ct);
-
         var results = products.Select(p =>
         {
             var primaryImage = p.GetPrimaryImage();
             var imageUri = _imageUriBuilder.BuildUri(primaryImage?.BlobName, 3600);
             return Map(p, imageUri);
         }).ToList();
+
         return new PagedQueryResult<ProductResult>(results, totalCount);
     }
 
-
-    public async Task<ProductResult?> GetProductByIdAsync(Guid productId, CancellationToken ct)
+    public async Task<ProductResult> GetProductByIdAsync(Guid productId, CancellationToken ct)
     {
         var product = await _repo.GetProductByIdAsync(productId, ct);
         var primaryImage = product?.GetPrimaryImage();
-        return product is null ? null : Map(product, _imageUriBuilder.BuildUri(primaryImage?.BlobName, 3600));
+        return product is null ? throw new NotFoundException($"Product not found with ID: {productId}") : Map(product, _imageUriBuilder.BuildUri(primaryImage?.BlobName, 3600));
     }
 
     private static ProductResult Map(Product p, string? imageUri)
         => new(p.Id, p.Name, p.Sku, p.PriceAmount, imageUri);
 
-    public async Task<ProductResult?> GetProductBySkuAsync(string sku, CancellationToken ct)
+    public async Task<ProductResult> GetProductBySkuAsync(string sku, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(sku)) return null; 
+        if (string.IsNullOrWhiteSpace(sku)) throw new ArgumentException("SKU cannot be null or whitespace.", nameof(sku)); 
+
         var product = await _repo.GetProductBySkuAsync(sku, ct);
-        return product is null ? null : Map(product, _imageUriBuilder.BuildUri(product.Id.ToString(), 3600));
+        var primaryImage = product?.GetPrimaryImage();
+        return product is null ? throw new NotFoundException($"Product not found with SKU: {sku}") : Map(product, _imageUriBuilder.BuildUri(primaryImage?.BlobName, 3600));
     }
 
     public async Task<AddProductResult> AddProductAsync(CreateProductCommand command, CancellationToken ct)
     {
-        try
-        {
-            var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug, ct);
-            if (categoryId is null)
-                throw new InvalidOperationException("Category not found.");
+        var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug, ct);
 
-            var product = Product.Create(
-                sku: command.Sku,
-                name: command.Name,
-                categoryId: categoryId.Value,
-                priceAmount: command.Price);
+        if (categoryId is null)
+            throw new NotFoundException("Category does not exist"); 
 
-            await _repo.CreateAsync(product, ct);
-            return new AddProductResult(true, product.Id, null);
-        }
-        catch (Exception ex)
-        {
-            return new AddProductResult(false, Guid.Empty, $"An error occurred while adding the product: {ex.Message}");
-        }
+        var product = Product.Create(
+            sku: command.Sku,
+            name: command.Name,
+            categoryId: categoryId.Value,
+            priceAmount: command.Price);
+
+        await _repo.CreateAsync(product, ct);
+
+        return new AddProductResult(true, product.Id, null);
     }
 
     public async Task<AddImageResult> AddImageAsync(AddProductImageCommand command, CancellationToken ct)
@@ -90,38 +90,54 @@ public class ProductService : IProductService
             command.Content.Position = 0;
 
         BlobUploadResult upload;
-        // ***Remember to failure test***
+
         try
-        {   
+        {
             upload = await _imageStorage.UploadAsync(
                 blobName,
                 command.Content,
-                command.ContentType
-            );
+                command.ContentType,
+                ct);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to add blob {BlobName} for ProductId {ProductId}", blobName, command.ProductId);
+            throw new BlobStorageException("Failed to upload image to blob storage.", ex);
+        }
 
-            await _repo.AddImageAsync(    
+        try
+        {
+            await _repo.AddImageAsync(
                 productId: command.ProductId,
                 blobName: blobName,
                 imageId: imageId,
                 makePrimary: command.IsPrimary,
-                ct
-            );
+                ct: ct);
 
-            return new AddImageResult(
-                Success: true,
-                ImageId: imageId,
-                UrlOrError: upload.Url
-            );
-
+            return new AddImageResult(true, imageId, upload.Url);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
-            try { await _imageStorage.DeleteIfExistsAsync(blobName); } 
-            
-            catch { return new AddImageResult(false, null, $"Failed to upload image: {ex.Message}");}
+            try
+            {
+                await _imageStorage.DeleteIfExistsAsync(blobName, CancellationToken.None);
+            }
+            catch (Exception cleanupException)
+            {
+                // swallow blob storage cleanup
+                _logger.LogWarning(cleanupException, "Failed to cleanup blob {BlobName} for ProductId {ProductId}", blobName, command.ProductId);
 
-            return new AddImageResult(false, null, $"Failed to upload image: {ex.Message}");
+            }
+            _logger.LogWarning("Failed to upload product image: {exception}", ex);
+            throw;
         }
     }
-
 }

@@ -1,8 +1,6 @@
-
-
 namespace Commerce.Contracts.Products;
 
-public record ProductDto(
+public record ProductSummaryDto(
     Guid ProductId,
     string Sku,
     string Name,

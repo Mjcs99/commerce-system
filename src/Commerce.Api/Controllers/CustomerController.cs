@@ -21,11 +21,12 @@ public class CustomerController : ControllerBase
     [HttpPost("me")]
     public async Task<IActionResult> GetOrCreateCustomer(CancellationToken ct)
     {
+        /*
         foreach (var claim in User.Claims)
         {
             Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
         }
-        
+        */
         var externalUserId = User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
         if (externalUserId == null)
         {

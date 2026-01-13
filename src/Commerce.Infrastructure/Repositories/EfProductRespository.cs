@@ -17,7 +17,6 @@ public class EfProductRepository : IProductRepository
         _db = db;
     }
 
-
     public async Task<Guid> CreateAsync(Product product, CancellationToken ct)
     {
         _db.Products.Add(product);
