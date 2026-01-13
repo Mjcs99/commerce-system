@@ -10,7 +10,7 @@ namespace Commerce.Api.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Authorize(Roles = "Admin")] 
+[Authorize] 
 [Route("api/v{version:apiVersion}/admin/products")]
 
 public class AdminProductsController : ControllerBase

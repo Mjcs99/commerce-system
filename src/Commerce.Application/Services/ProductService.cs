@@ -63,7 +63,7 @@ public class ProductService : IProductService
         var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug, ct);
 
         if (categoryId is null)
-            throw new NotFoundException($"Category does not exist"); 
+            throw new NotFoundException("Category does not exist"); 
 
         var product = Product.Create(
             sku: command.Sku,
