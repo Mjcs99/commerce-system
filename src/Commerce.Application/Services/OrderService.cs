@@ -13,20 +13,17 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
-    private readonly ICustomerRepository _customerRepository;
     private readonly IOutbox _outbox;
     private readonly IUnitOfWork _unitOfWork;
     public OrderService(
         IOrderRepository orderRepository,
         IProductRepository productRepository,
-        ICustomerRepository customerRepository,
         IOutbox outbox,
         IUnitOfWork unitOfWork
         )
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
-        _customerRepository = customerRepository;
         _outbox = outbox;
         _unitOfWork = unitOfWork;
     }
