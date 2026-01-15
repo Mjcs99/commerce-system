@@ -29,6 +29,8 @@ public static class DependencyInjection
         services.AddScoped<IInventoryRepository, EfInventoryRepository>();
         services.AddScoped<IOutbox, EfOutbox>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>(); 
+        services.AddHostedService<EmailConsumerHostedService>();
+        services.AddHostedService<OrdersConsumerHostedService>();
         services.AddSingleton<IMessageBus, AzureServiceBusMessageBus>();
         services.AddSingleton(_ => new ServiceBusClient(configuration["ServiceBus:ConnectionString"]));
         services.AddDbContext<CommerceDbContext>(options =>

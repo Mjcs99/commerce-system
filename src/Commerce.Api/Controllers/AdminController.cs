@@ -10,14 +10,14 @@ namespace Commerce.Api.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Authorize] 
+[Authorize(Policy = "AdminOnly")] 
 [Route("api/v{version:apiVersion}/admin/products")]
 
-public class AdminProductsController : ControllerBase
+public class AdminController : ControllerBase
 {
     private readonly IProductService _productService;
 
-    public AdminProductsController(IProductService productService)
+    public AdminController(IProductService productService)
     {
         _productService = productService;
     }

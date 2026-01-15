@@ -63,7 +63,7 @@ public class ProductService : IProductService
         var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug, ct);
 
         if (categoryId is null)
-            throw new NotFoundException("Category does not exist"); 
+            throw new ValidationException("Invalid category: category does not exist."); 
 
         var product = Product.Create(
             sku: command.Sku,
@@ -132,7 +132,6 @@ public class ProductService : IProductService
             }
             catch (Exception cleanupException)
             {
-                // swallow blob storage cleanup
                 _logger.LogWarning(cleanupException, "Failed to cleanup blob {BlobName} for ProductId {ProductId}", blobName, command.ProductId);
 
             }

@@ -7,7 +7,6 @@ using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
 using Commerce.Api.Outbox;
 using Commerce.Application.Interfaces.In.Outbox;
-using Commerce.Api.Messaging;
 using Commerce.Application.Interfaces.In;
 using Commerce.Application.Handlers;
 using Commerce.Api.Exceptions;
@@ -16,14 +15,17 @@ using Commerce.Application.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IOutboxPublisher, OutboxPublisher>();
-builder.Services.AddHostedService<EmailConsumerHostedService>();
-builder.Services.AddHostedService<OrdersConsumerHostedService>();
 builder.Services.AddHostedService<OutboxPublisherHostedService>();
 builder.Services.AddInfrastructureServices(builder.Configuration)
                 .AddApplicationServices();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", p => p.RequireRole("Admin"));
+});
 builder.Services.AddScoped<IIntegrationEventHandler, OrderPlacedEventHandler>();
 builder.Services.AddScoped<IIntegrationEventHandler, OrderProcessedEmailHandler>();
 builder.Services.AddAuthorization();
@@ -37,6 +39,7 @@ builder.Services.AddProblemDetails(configure =>
     };
 });
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 // Swagger UI via Swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -93,7 +96,6 @@ if (app.Environment.IsDevelopment())
     });
     await SeedData.SeedProductsAsync(db, count: 10);   
 }
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
