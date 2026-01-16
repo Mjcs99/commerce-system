@@ -58,7 +58,11 @@ public class ProductService : IProductService
         return product is null ? throw new NotFoundException($"Product not found with SKU: {sku}") : Map(product, _imageUriBuilder.BuildUri(primaryImage?.BlobName, 3600));
     }
 
+<<<<<<< HEAD
     public async Task<Guid> AddProductAsync(CreateProductCommand command, CancellationToken ct)
+=======
+    public async Task<AddProductResult> AddProductAsync(CreateProductCommand command, CancellationToken ct)
+>>>>>>> 2c1c6145c851b9f6ff3f8050d464ae51db9a7269
     {
         var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug, ct);
 
@@ -73,7 +77,11 @@ public class ProductService : IProductService
 
         await _repo.CreateAsync(product, ct);
 
+<<<<<<< HEAD
         return product.Id;
+=======
+        return new AddProductResult(true, product.Id, null);
+>>>>>>> 2c1c6145c851b9f6ff3f8050d464ae51db9a7269
     }
 
     public async Task<AddImageResult> AddImageAsync(AddProductImageCommand command, CancellationToken ct)
