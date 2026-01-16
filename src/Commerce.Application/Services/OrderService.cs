@@ -1,10 +1,8 @@
 namespace Commerce.Application.Services;
 
-using System.ComponentModel.DataAnnotations;
 using Commerce.Application.Interfaces.In;
 using Commerce.Application.Interfaces.Out;
 using Commerce.Application.Orders.Commands;
-using Commerce.Application.Orders.Results;
 using Commerce.Domain.Entities;
 using Commerce.Application.Exceptions;
 using System.Text.Json;
@@ -28,7 +26,7 @@ public class OrderService : IOrderService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<CreateOrderResult> CreateOrderAsync(CreateOrderCommand command, CancellationToken ct)
+    public async Task<Guid> CreateOrderAsync(CreateOrderCommand command, CancellationToken ct)
     {
         if (command.Quantity <= 0)
             throw new Exceptions.ValidationException("Quantity must be greater than 0.");
@@ -54,6 +52,6 @@ public class OrderService : IOrderService
      
         await _unitOfWork.SaveChangesAsync(ct);    
         
-        return new CreateOrderResult(true, order.Id);
+        return order.Id;
     }
 }
