@@ -59,3 +59,8 @@ src/Commerce.Api/*.db
 src/Commerce.Api/*.db-wal
 src/Commerce.Api/*.db-shm
 
+####################################
+# Misc
+####################################
+
+src/Commerce.Api/Commerce.Api.http
