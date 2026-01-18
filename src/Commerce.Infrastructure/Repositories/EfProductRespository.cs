@@ -91,7 +91,10 @@ public class EfProductRepository : IProductRepository
     public async Task<Product?> GetProductByIdAsync(Guid id, CancellationToken ct)
         => await _db.Products
             .SingleOrDefaultAsync(p => p.Id == id, ct);
-
+    public async Task<Product?> GetProductDetailsByIdAsync(Guid id, CancellationToken ct)
+        => await _db.Products.Include(p => p.Images)
+            .SingleOrDefaultAsync(p => p.Id == id, ct);
+    
     public async Task<Product?> GetProductBySkuAsync(string sku, CancellationToken ct)
         => await _db.Products
             .AsNoTracking()

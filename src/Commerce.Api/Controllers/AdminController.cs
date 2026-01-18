@@ -25,15 +25,12 @@ public class AdminController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProductSummaryDto>> AddProductAsync([FromBody] CreateProductDto dto, CancellationToken ct)
     {
-        var result = await _productService.AddProductAsync(
+        var id = await _productService.AddProductAsync(
             new CreateProductCommand(dto.Name, dto.Sku, dto.CategorySlug, dto.Price),
             ct
         );
 
-        if (!result.Success)
-            return BadRequest(result.ErrorMessage);
-
-        var product = await _productService.GetProductByIdAsync(result.ProductId, ct);
+        var product = await _productService.GetProductByIdAsync(id, ct);
         if (product is null)
             return Problem("Product was created but could not be loaded.");
 

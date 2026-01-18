@@ -27,6 +27,7 @@ public class CustomerController : ControllerBase
             Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
         }
         */
+        // Switch to sub?
         var externalUserId = User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
         if (externalUserId == null)
         {

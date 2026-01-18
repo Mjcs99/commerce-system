@@ -8,6 +8,7 @@ using Commerce.Application.Images;
 using Commerce.Application.Interfaces.Out;
 using Microsoft.Extensions.Logging;
 using Commerce.Application.Exceptions;
+using Commerce.Contracts.Products;
 
 namespace Commerce.Application.Services;
 
@@ -138,5 +139,14 @@ public class ProductService : IProductService
             _logger.LogWarning("Failed to upload product image: {exception}", ex);
             throw;
         }
+    }
+
+    public async Task<ProductDetailsDto> GetProductDetailsByIdAsync(Guid productId, CancellationToken ct)
+    {
+        var product = await _repo.GetProductDetailsByIdAsync(productId, ct)
+            ?? throw new NotFoundException($"Cannot find product with ID: {productId}");
+
+        return new ProductDetailsDto(product.Id, product.Name, product.Images, product.Description);
+
     }
 }
