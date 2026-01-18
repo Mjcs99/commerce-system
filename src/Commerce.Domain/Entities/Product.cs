@@ -1,3 +1,5 @@
+using System.Dynamic;
+
 namespace Commerce.Domain.Entities;
 
 public sealed class Product
@@ -11,23 +13,29 @@ public sealed class Product
     public Guid CategoryId { get; private set; }
     public Category? Category { get; private set; }
     public decimal PriceAmount { get; private set; }
+    public string Description { get; private set; } = null!;
+    public DateTime CreatedAtUtc {get; private set;}
 
     private Product() { } 
 
-    public Product(Guid id, string sku, string name, Guid categoryId, decimal priceAmount)
+    public Product(Guid id, string sku, string name, Guid categoryId, decimal priceAmount, string description)
     {
         Id = id;
         Sku = sku;
         Name = name;
         PriceAmount = priceAmount;
         CategoryId = categoryId;
+        Description = description;
+        CreatedAtUtc = DateTime.UtcNow;
     }
-    public static Product Create(string sku, string name, Guid categoryId,decimal priceAmount)
-        => new(Guid.NewGuid(), sku, name, categoryId, priceAmount);
+    
+    public static Product Create(string sku, string name, Guid categoryId, decimal priceAmount, string description)
+        => new(Guid.NewGuid(), sku, name, categoryId, priceAmount, description);
     public ProductImage? GetPrimaryImage()
     {
         return _images.FirstOrDefault(i => i.IsPrimary);
     }
+
     public ProductImage AddImage(string blobName, Guid imageId, bool makePrimary)
     {
         if (makePrimary) SetAllImagesNonPrimary();

@@ -10,7 +10,7 @@ public interface IProductService
 {
     Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query, CancellationToken ct);
     Task<AddImageResult> AddImageAsync(AddProductImageCommand command, CancellationToken ct);
-    Task<Guid> AddProductAsync(CreateProductCommand command, CancellationToken ct);
+    Task<Guid> AddProductAsync(CreateProductDto command, CancellationToken ct);
     Task<ProductResult> GetProductByIdAsync(Guid productId, CancellationToken ct);
     Task<ProductDetailsDto> GetProductDetailsByIdAsync(Guid productId, CancellationToken ct);
     Task<ProductResult> GetProductBySkuAsync(string sku, CancellationToken ct);

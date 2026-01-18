@@ -3,5 +3,6 @@ public sealed record CreateProductDto(
     string Name,
     string Sku,
     string CategorySlug,
-    decimal Price
+    decimal Price,
+    string description
 );

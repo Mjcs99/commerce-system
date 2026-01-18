@@ -59,7 +59,7 @@ public class ProductService : IProductService
         return product is null ? throw new NotFoundException($"Product not found with SKU: {sku}") : Map(product, _imageUriBuilder.BuildUri(primaryImage?.BlobName, 3600));
     }
 
-    public async Task<Guid> AddProductAsync(CreateProductCommand command, CancellationToken ct)
+    public async Task<Guid> AddProductAsync(CreateProductDto command, CancellationToken ct)
     {
         var categoryId = await _repo.GetCategoryIdBySlugAsync(command.CategorySlug, ct);
 
@@ -70,7 +70,9 @@ public class ProductService : IProductService
             sku: command.Sku,
             name: command.Name,
             categoryId: categoryId.Value,
-            priceAmount: command.Price);
+            priceAmount: command.Price,
+            description: command.description
+            );
 
         await _repo.CreateAsync(product, ct);
 
@@ -146,7 +148,7 @@ public class ProductService : IProductService
         var product = await _repo.GetProductDetailsByIdAsync(productId, ct)
             ?? throw new NotFoundException($"Cannot find product with ID: {productId}");
 
-        return new ProductDetailsDto(product.Id, product.Name, product.Images, product.Description);
+        return new ProductDetailsDto(product.Id, product.Name, product.Images.Select(i => i.BlobName), product.Description);
 
     }
 }

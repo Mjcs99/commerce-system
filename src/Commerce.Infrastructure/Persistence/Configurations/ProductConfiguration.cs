@@ -12,6 +12,7 @@ public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasIndex(p => p.Sku).IsUnique();
         builder.Property(p => p.Name).IsRequired().HasMaxLength(200);
         builder.Property(p => p.PriceAmount).IsRequired();
+        builder.Property(p => p.Description).IsRequired();
         builder.Navigation(p => p.Images)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Property(p => p.CategoryId).IsRequired();

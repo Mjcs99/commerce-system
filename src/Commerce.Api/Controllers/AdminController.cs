@@ -25,10 +25,7 @@ public class AdminController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProductSummaryDto>> AddProductAsync([FromBody] CreateProductDto dto, CancellationToken ct)
     {
-        var id = await _productService.AddProductAsync(
-            new CreateProductCommand(dto.Name, dto.Sku, dto.CategorySlug, dto.Price),
-            ct
-        );
+        var id = await _productService.AddProductAsync(dto, ct);
 
         var product = await _productService.GetProductByIdAsync(id, ct);
         if (product is null)

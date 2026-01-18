@@ -1,5 +1,7 @@
 namespace Commerce.Contracts.Products;
 public sealed record ProductDetailsDto(
     Guid ProductId,
-    string description
+    string Name,
+    IEnumerable<string> Images,
+    string Description
 );
