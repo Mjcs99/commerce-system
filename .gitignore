@@ -64,3 +64,4 @@ src/Commerce.Api/*.db-shm
 ####################################
 
 src/Commerce.Api/Commerce.Api.http
+src/Commerce.Infrastructure/Migrations/

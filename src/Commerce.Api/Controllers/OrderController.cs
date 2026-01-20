@@ -23,8 +23,7 @@ public class OrderController : ControllerBase
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> PlaceOrderAsync(
-        [FromQuery] Guid productId,
-        [FromQuery] int quantity,
+        [FromBody] PlaceOrderRequest request,
         CancellationToken ct)
     {
         var externalUserId = User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier");
@@ -34,7 +33,7 @@ public class OrderController : ControllerBase
         var lastName = User.FindFirstValue(ClaimTypes.Surname);;
         var customer = await _customerService.GetOrCreateCustomerAsync(externalUserId, email, firstName, lastName, ct);
         if (customer == null) return Unauthorized();
-        var res = await _orderService.CreateOrderAsync(new CreateOrderCommand(customer.Id, productId, quantity), ct);
-        return Ok(res);
+        var res = await _orderService.CreateOrderAsync(request, customer.Id, ct);
+        return Ok($"Order ID: {res}");
     }
 }

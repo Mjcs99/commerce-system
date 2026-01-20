@@ -1,5 +1,4 @@
 using Commerce.Domain.Entities;
-using Commerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Commerce.Infrastructure.Persistence;
@@ -27,7 +26,7 @@ public static class SeedData
                 var name = $"{type} {i}";
                 var sku = $"SKU-{skuCounter:D4}";    
                 var price = Math.Round(5m + (i * 0.75m), 2);
-                var product = Product.Create(sku, name, category.Id, price);
+                var product = Product.Create(sku, name, category.Id, price, "Clothing product");
                 products.Add(product);
                 inventory.Add(new InventoryItem{
                     ProductId = product.Id,

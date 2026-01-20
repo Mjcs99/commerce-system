@@ -4,5 +4,5 @@ namespace Commerce.Application.Interfaces.In;
 
 public interface IOrderService
 {
-    Task<Guid> CreateOrderAsync(CreateOrderCommand command, CancellationToken ct);
+    Task<Guid> CreateOrderAsync(PlaceOrderRequest request, Guid customerId, CancellationToken ct);
 }

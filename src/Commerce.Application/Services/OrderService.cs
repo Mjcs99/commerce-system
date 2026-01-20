@@ -26,18 +26,15 @@ public class OrderService : IOrderService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> CreateOrderAsync(CreateOrderCommand command, CancellationToken ct)
+    public async Task<Guid> CreateOrderAsync(PlaceOrderRequest request, Guid customerId, CancellationToken ct)
     {
-        if (command.Quantity <= 0)
-            throw new Exceptions.ValidationException("Quantity must be greater than 0.");
-
-        var product = await _productRepository.GetProductByIdAsync(command.ProductId, ct)
-            ?? throw new NotFoundException($"Product with ID: {command.ProductId} not found");
-
-        var order = Order.Create(command.CustomerId);
-
-        order.AddItem(command.ProductId, command.Quantity, product.PriceAmount);
-
+        var order = Order.Create(customerId);
+        foreach (var orderItem in request.Items) {
+            var product = await _productRepository.GetProductByIdAsync(orderItem.ProductId, ct) ?? throw new NotFoundException($"Product with ID: {orderItem.ProductId} not found");
+            if (orderItem.Quantity <= 0) throw new ValidationException("Quantity must be greater than 0.");
+            order.AddItem(product.Id, orderItem.Quantity, product.PriceAmount);
+        }
+        
         _orderRepository.AddOrder(order);
 
         var evt = new OrderPlacedEvent(
