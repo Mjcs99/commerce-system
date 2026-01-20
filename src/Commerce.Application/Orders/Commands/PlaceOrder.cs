@@ -1,3 +1,4 @@
+namespace Commerce.Application.Orders.Commands;
 public sealed record PlaceOrderRequest(
     IReadOnlyList<OrderLineRequest> Items);
 

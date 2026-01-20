@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Commerce.Application.Interfaces.In.Outbox;
 public interface IOutboxPublisher
 {

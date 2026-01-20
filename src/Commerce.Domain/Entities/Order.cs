@@ -35,6 +35,7 @@ public sealed class Order
             unitPrice
         ));
     }
+    
     public void UpdateStatus()
     {
         if(Status is OrderStatus.Cancelled) throw new InvalidOperationException("Cancelled orders cannot update.");
