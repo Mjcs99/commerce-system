@@ -85,7 +85,6 @@ public class EfProductRepository : IProductRepository
         _db.Entry(newImage).State = EntityState.Added;
 
         await _db.SaveChangesAsync(ct);
-
     }
 
     public async Task<Product?> GetProductByIdAsync(Guid id, CancellationToken ct)

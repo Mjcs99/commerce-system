@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Hanger icon">
+  <path d="M256 84c34 0 62 25 62 56 0 22-14 42-36 51-10 4-18 12-18 22v18l208 106c18 9 28 27 26 47-3 22-22 40-46 40H60c-24 0-44-18-46-40-2-20 8-38 26-47l208-106v-18c0-22 12-41 33-49 8-3 13-10 13-18 0-11-11-21-25-21-16 0-27 10-27 24 0 10-8 18-18 18s-18-8-18-18c0-35 31-63 72-63Z"
+        fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+  <path d="M92 392h328" fill="none" stroke="currentColor" stroke-width="14" opacity="0.18" stroke-linecap="round" stroke-dasharray="18 18"/>
+</svg>

@@ -38,7 +38,22 @@ builder.Services.AddProblemDetails(configure =>
     };
 });
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+// CORS
 
+const string DevCors = "DevCors";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(DevCors, policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173", "https://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+            // If you use cookies/auth later, also add:
+            // .AllowCredentials();
+    });
+});
 // Swagger UI via Swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -95,6 +110,7 @@ if (app.Environment.IsDevelopment())
     });
     await SeedData.SeedProductsAsync(db, count: 10);   
 }
+app.UseCors(DevCors);
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();

@@ -148,7 +148,7 @@ public class ProductService : IProductService
         var product = await _repo.GetProductDetailsByIdAsync(productId, ct)
             ?? throw new NotFoundException($"Cannot find product with ID: {productId}");
 
-        return new ProductDetailsDto(product.Id, product.Name, product.Images.Select(i => i.BlobName), product.Description);
+        return new ProductDetailsDto(product.Id, product.Name, product.Images.Select(i => _imageUriBuilder.BuildUri(i.BlobName, 3600)), product.Description);
 
     }
 }
