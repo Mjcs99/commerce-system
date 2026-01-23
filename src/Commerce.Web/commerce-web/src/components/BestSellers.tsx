@@ -29,8 +29,11 @@ export default function BestSellers(){
       }
     }
     loadProducts();
-  }, []);
+    }, []);
 
+    if (error) {
+      return <p>{error}</p>;
+    }
     return (
       <div className="bs-container">
       <header className="bs-header">
@@ -56,7 +59,7 @@ export default function BestSellers(){
                 <div className="banner">
                     <h3>{p.name}</h3>
                     <p>${p.priceAmount}</p>
-                    <button><span>Add to cart</span></button>
+                    <button className="add-to-cart-btn"><span>Add to cart</span></button>
                 </div>
             </div>
             ))}

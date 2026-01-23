@@ -45,7 +45,26 @@ export function Navbar({ categories, brands }: NavbarProps) {
           UrbanStreetwear
         </Link>
         <div className="nav-middle-dropdown">
-            <button onClick={() => {setLinksOpen(!linksOpen)}}><span className={`chev ${linksOpen ? "chevOpen" : ""}`}>▾</span></button>
+            
+            <button onClick={() => {setLinksOpen(!linksOpen)}}>
+                <span className={`chev ${linksOpen ? "chevOpen" : ""}`}>
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true">
+                        <path
+                        d="M6 9l6 6 6-6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        />
+                    </svg>
+                </span>
+            </button>
             {linksOpen && 
             (<div className="nav-middle-links-drop-down">
                 <Link className="navLink-dropdown" to="/about">

@@ -1,7 +1,12 @@
-import BestSellers from "./components/BestSellers.tsx";
-
+import BestSellers from "./components/BestSellers";
+import Filters from "./components/Filters";
+import "./Homepage.css";
 export default function Homepage(){
     return(
-        <BestSellers />
+        <div className="homepage-layout">
+            <Filters />
+            <BestSellers />
+        </div>
+        
     )
 }
