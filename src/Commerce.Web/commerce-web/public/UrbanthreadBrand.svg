@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220" role="img" aria-label="urbanstreetwear">
+  <defs>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect x="30" y="50" rx="44" ry="44" width="840" height="120" fill="#0f0f0f" filter="url(#soft)"/>
+  <rect x="30" y="50" rx="44" ry="44" width="840" height="120" fill="none" stroke="#2a2a2a" stroke-width="2"/>
+
+  <text x="450" y="128" text-anchor="middle"
+        font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+        font-size="58"
+        font-weight="700"
+        letter-spacing="-1.2"
+        fill="#ffffff">
+    urbanstreetwear
+  </text>
+
+  <circle cx="80" cy="110" r="6" fill="#ffffff" opacity="0.75"/>
+  <circle cx="820" cy="110" r="6" fill="#ffffff" opacity="0.75"/>
+</svg>

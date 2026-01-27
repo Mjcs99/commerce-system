@@ -13,7 +13,7 @@ export default function BestSellers(){
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
- 
+  // Remove later, use client, add best sellers logic server side
   useEffect(() => {
     async function loadProducts() {
       try {

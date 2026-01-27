@@ -5,16 +5,18 @@ using Commerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Commerce.Application.Products.Results;
 using Commerce.Infrastructure.Images;
+using Microsoft.Extensions.Logging;
 
 namespace Commerce.Infrastructure.Repositories;
 
 public class EfProductRepository : IProductRepository
 {
     private readonly CommerceDbContext _db;
-
-    public EfProductRepository(CommerceDbContext db)
+    private readonly ILogger<EfProductRepository> _logger;
+    public EfProductRepository(CommerceDbContext db, ILogger<EfProductRepository> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
     public async Task<Guid> CreateAsync(Product product, CancellationToken ct)
@@ -26,7 +28,7 @@ public class EfProductRepository : IProductRepository
 
     public async Task<(IReadOnlyList<Product> items, int totalCount)> GetPagedAsync(
         string? searchTerm,
-        string? categorySlug,
+        List<string>? categorySlugs,
         int page,
         int pageSize,
         CancellationToken ct)
@@ -34,24 +36,30 @@ public class EfProductRepository : IProductRepository
         page = Math.Max(page, 1);
         pageSize = Math.Clamp(pageSize, 1, 200);
 
-        Guid? categoryId = null;
+        List<Guid> categoryIds = new();
 
-        if (!string.IsNullOrWhiteSpace(categorySlug))
+        if (categorySlugs?.Count > 0)
         {
-            categoryId = await _db.Category
+            categorySlugs = categorySlugs.Select(c => c.ToLower()).ToList();
+            categoryIds = await _db.Category
                 .AsNoTracking()
-                .Where(c => c.Slug == categorySlug) 
-                .Select(c => (Guid?)c.Id)
-                .SingleOrDefaultAsync(ct);
+                .Where(c => categorySlugs.Contains(c.Slug))
+                .Select(c => c.Id)
+                .ToListAsync(ct);
+            var existingSlugs = await _db.Category
+                .AsNoTracking()
+                .Select(c => c.Slug)
+                .ToListAsync(ct);
 
-            if (categoryId is null)
-                return (Array.Empty<Product>(), 0);
+            _logger.LogWarning("DB slugs: {Slugs}", string.Join(", ", existingSlugs));
+            _logger.LogWarning("Category slugs: {Slugs}", string.Join(", ", categorySlugs ?? new()));
+            
         }
 
         IQueryable<Product> baseQuery = _db.Products.AsNoTracking();
 
-        if (categoryId is not null)
-            baseQuery = baseQuery.Where(p => p.CategoryId == categoryId.Value);
+        if (categoryIds?.Count > 0)
+            baseQuery = baseQuery.Where(p => categoryIds.Contains(p.CategoryId));
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
@@ -106,4 +114,5 @@ public class EfProductRepository : IProductRepository
             .SingleOrDefaultAsync(c => c.Slug == categorySlug, ct);
         return category?.Id;
     }
+
 }

@@ -11,6 +11,8 @@ using Commerce.Application.Interfaces.In;
 using Commerce.Application.Handlers;
 using Commerce.Api.Exceptions;
 using Commerce.Application.DependencyInjection;
+using Commerce.Infrastructure.Options;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,8 +95,6 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<CommerceDbContext>();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -108,7 +108,12 @@ if (app.Environment.IsDevelopment())
 
         c.OAuthScopeSeparator(" ");
     });
-    await SeedData.SeedProductsAsync(db, count: 10);   
+
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<CommerceDbContext>();
+    var blobStorage = scope.ServiceProvider.GetRequiredService<IOptions<BlobStorageOptions>>();
+    SeedData seeder = new SeedData(db, blobStorage);
+    await seeder.SeedProductsAsync(count: 10);   
 }
 app.UseCors(DevCors);
 app.UseAuthentication();

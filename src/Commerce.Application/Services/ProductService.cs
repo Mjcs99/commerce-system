@@ -29,7 +29,7 @@ public class ProductService : IProductService
 
     public async Task<PagedQueryResult<ProductResult>> GetProductsAsync(GetProductsQuery query, CancellationToken ct)
     {
-        var (products, totalCount) = await _repo.GetPagedAsync(query.SearchTerm, query.CategorySlug, query.Page, query.PageSize, ct);
+        var (products, totalCount) = await _repo.GetPagedAsync(query.SearchTerm, query.CategorySlugs, query.Page, query.PageSize, ct);
         var results = products.Select(p =>
         {
             var primaryImage = p.GetPrimaryImage();

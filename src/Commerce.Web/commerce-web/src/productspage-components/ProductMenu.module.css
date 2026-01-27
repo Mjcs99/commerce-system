@@ -1,0 +1,28 @@
+.filtersContainer{
+    margin: 40px;
+}
+.filter{
+    text-align: left;
+    margin-top: 40px;
+}
+.filterOptions{
+    display: flex;
+    flex-direction: column;
+}
+.filterOptions button{
+    background-color: white;
+    color: black;
+    text-align: left;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+}
+.filterOptions button:hover{
+    transform: scale(1.02);
+}
+.filterOptions button:focus {
+  outline: none;
+  box-shadow: none;
+}
+.selected{
+    font-weight: 900;
+}

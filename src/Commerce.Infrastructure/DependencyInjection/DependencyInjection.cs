@@ -15,6 +15,8 @@ using Commerce.Infrastructure.Messaging;
 using Microsoft.Extensions.Options;
 using Commerce.Infrastructure.Email;
 using Azure.Messaging.ServiceBus;
+using Commerce.Api.Interfaces.Out;
+
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(
@@ -27,6 +29,7 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, EfOrderRepository>();
         services.AddScoped<ICustomerRepository, EfCustomerRepository>();
         services.AddScoped<IInventoryRepository, EfInventoryRepository>();
+        services.AddScoped<ICategoryRepository, EfCategoryRepository>();
         services.AddScoped<IOutbox, EfOutbox>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>(); 
         services.AddHostedService<EmailConsumerHostedService>();

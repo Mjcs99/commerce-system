@@ -4,7 +4,7 @@ namespace Commerce.Application.Interfaces.Out;
 
 public interface IProductRepository
 {
-    Task<(IReadOnlyList<Product> items, int totalCount)> GetPagedAsync(string? searchTerm, string? categorySlug, int page, int pageSize, CancellationToken ct);
+    Task<(IReadOnlyList<Product> items, int totalCount)> GetPagedAsync(string? searchTerm, List<string>? categorySlugs, int page, int pageSize, CancellationToken ct);
     Task<Guid?> GetCategoryIdBySlugAsync(string categorySlug, CancellationToken ct);
     Task<Product?> GetProductByIdAsync(Guid id, CancellationToken ct);
     Task<Product?> GetProductDetailsByIdAsync(Guid id, CancellationToken ct);

@@ -1,27 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
-
-type NavbarProps = {
-  categories: { label: string; to: string }[];
-  brands: { label: string; to: string }[];
-};
-
-export function Navbar({ categories, brands }: NavbarProps) {
-  const [open, setOpen] = useState(false);
+import logo from "../public/UrbanthreadLogo.svg";
+import brand from "../public/UrbanthreadBrand.svg"
+export function Navbar() {
   const [linksOpen, setLinksOpen] = useState(false);
-  const shopRef = useRef<HTMLDivElement | null>(null);
   const [warning, setWarning] = useState(true);
-
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
-
   return (
     <header className="nav">
       {warning && (
@@ -40,13 +24,13 @@ export function Navbar({ categories, brands }: NavbarProps) {
         </div>
       )}
 
-      <div className="nav-middle">        
-        <Link className="brand" to="/">
-          UrbanStreetwear
+      <div className="nav-middle">    
+        <Link to="/">
+          <img className="nav-bottom-logo" src={brand} />  
         </Link>
         <div className="nav-middle-dropdown">
             
-            <button onClick={() => {setLinksOpen(!linksOpen)}}>
+            <button onClick={() => {setLinksOpen(!linksOpen)}} className="nav-middle-dropdown">
                 <span className={`chev ${linksOpen ? "chevOpen" : ""}`}>
                     <svg
                         width="16"
@@ -118,54 +102,16 @@ export function Navbar({ categories, brands }: NavbarProps) {
       </div>
 
       <div className="nav-bottom">
-        <nav className="links">
-          <div className="dropdown" ref={shopRef}>
-            <button
-              type="button"
-              className="navBtn"
-              aria-haspopup="menu"
-              aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
-            >
-              Shop{" "}
-              <span className={`chev ${open ? "chevOpen" : ""}`}>▾</span>
-            </button>
-
-            {open && (
-              <div className="menu" role="menu">
-                <div className="menu-categories">
-                  Categories
-                  {categories.map((c) => (
-                    <Link
-                      key={c.to}
-                      className="menuItem"
-                      to={c.to}
-                      role="menuitem"
-                      onClick={() => setOpen(false)}
-                    >
-                      {c.label}
-                    </Link>
-                  ))}
-                </div>
-
-                <div className="menu-brands">
-                  Brands
-                  {brands.map((c) => (
-                    <Link
-                      key={c.to}
-                      className="menuItem"
-                      to={c.to}
-                      role="menuitem"
-                      onClick={() => setOpen(false)}
-                    >
-                      {c.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </nav>
+        <div className="logo-searchbar-container">
+          <img className="nav-bottom-logo" src={logo} />
+          <Link to="/products" className="shop-products-link">Shop All Products</Link>
+        </div>
+        <div className="search-bar">
+          <input
+            type="search"
+            placeholder="Search products..."
+          />
+        </div>
       </div>
     </header>
   );

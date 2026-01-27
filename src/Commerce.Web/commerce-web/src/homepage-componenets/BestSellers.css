@@ -9,16 +9,10 @@
   left: 24px;
   right: 24px;
   height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(0,0,0,0.15),
-    transparent
-  );
 }
 .bs-header{
     margin-left: 20px;
-    text-align: left;
+    text-align: center;
 }
 .bs-header h3 {
   margin: 0 0 16px;

@@ -12,16 +12,18 @@ namespace Commerce.Api.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IProductService _productService;
+    private readonly ILogger<ProductsController> _logger;
 
-    public ProductsController(IProductService productService)
+    public ProductsController(IProductService productService, ILogger<ProductsController> logger)
     {
         _productService = productService;
+        _logger = logger;
     }
-    // Change to ProductSummary dto (browsing) and implement ProductDetail dto for product page
+
     [HttpGet]
     public async Task<ActionResult<PagedResult<ProductSummaryDto>>> GetAllProductsAsync(
         [FromQuery] string? searchTerm,
-        [FromQuery] string? categorySlug,
+        [FromQuery] List<string>? category,
         CancellationToken ct,
         [FromQuery] int page = 1)
     {
@@ -29,7 +31,7 @@ public class ProductsController : ControllerBase
         var result = await _productService.GetProductsAsync(
             new GetProductsQuery(
                 string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm.Trim(),
-                string.IsNullOrWhiteSpace(categorySlug) ? null : categorySlug.Trim(),
+                category?.Count == 0 ? null : category,
                 Math.Max(page, 1),
                 pageSize
             ), ct);
@@ -70,4 +72,6 @@ public class ProductsController : ControllerBase
         var product = await _productService.GetProductBySkuAsync(sku, ct);
         return product is null ? NotFound() : Ok(product);
     }
+
+    
 }

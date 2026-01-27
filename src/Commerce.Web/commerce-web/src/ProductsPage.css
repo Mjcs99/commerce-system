@@ -1,0 +1,15 @@
+.products-page-container{
+    max-width: 100%;
+    min-width: 100%;
+}
+.products-page-container > * {
+  min-width: 100%;
+}
+
+.menu-grid-container {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    width: 100%;
+    
+}

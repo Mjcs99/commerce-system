@@ -2,7 +2,7 @@ namespace Commerce.Application.Products.Queries;
 
 public sealed record GetProductsQuery(
     string? SearchTerm,
-    string? CategorySlug,
+    List<string>? CategorySlugs,
     int Page,
     int PageSize 
 );
