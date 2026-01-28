@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
-import logo from "../public/UrbanthreadLogo.svg";
-import brand from "../public/UrbanthreadBrand.svg"
+import logo from "../../public/UrbanthreadLogo.svg";
+import brand from "../../public/UrbanthreadBrand.svg"
 export function Navbar() {
   const [linksOpen, setLinksOpen] = useState(false);
   const [warning, setWarning] = useState(true);

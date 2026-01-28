@@ -1,5 +1,5 @@
-import BestSellers from "./homepage-componenets/BestSellers";
-import HeaderAdvertisement from "./homepage-componenets/HeaderAdvertisement";
+import BestSellers from "../home-page-components/BestSellers";
+import HeaderAdvertisement from "../home-page-components/HeaderAdvertisement";
 import "./Homepage.css";
 export default function Homepage(){
     return(
