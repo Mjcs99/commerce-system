@@ -1,0 +1,21 @@
+.priceContainer {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.priceContainer p {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0b5ed7;
+  letter-spacing: 0.4px;
+}
+
+.price::before {
+  content: "$";
+  font-size: 1.1rem;
+  vertical-align: super;
+  margin-right: 2px;
+  opacity: 0.8;
+}

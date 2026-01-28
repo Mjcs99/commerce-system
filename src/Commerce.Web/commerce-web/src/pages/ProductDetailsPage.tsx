@@ -10,6 +10,7 @@ export default function ProductDetailsPage() {
   const [product, setProduct] = useState<ProductDetails>({
     productId: "",
     name: "",
+    price: new Float32Array(),
     images: [],
     description: ""
   });
@@ -37,8 +38,10 @@ export default function ProductDetailsPage() {
 
   return (
     <div className={styles.container}>
-      <ProductGallery images={product.images}/>
-      <ProductPurchaseInfo product={product} />
+      <div className={styles.galleryAndInfoContainer}>
+        <ProductGallery images={product.images}/>
+        <ProductPurchaseInfo product={product} />
+      </div>
     </div>
   );
 }

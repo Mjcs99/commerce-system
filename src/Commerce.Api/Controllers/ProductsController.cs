@@ -72,6 +72,4 @@ public class ProductsController : ControllerBase
         var product = await _productService.GetProductBySkuAsync(sku, ct);
         return product is null ? NotFound() : Ok(product);
     }
-
-    
 }

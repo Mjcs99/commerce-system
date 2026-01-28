@@ -7,6 +7,7 @@ export type GetProductsResponse = {
 export type GetProductDetailsResponse = {
   productId: string;
   name: string;
+  price: Float32Array;
   description: string;
   images: string[];
 };

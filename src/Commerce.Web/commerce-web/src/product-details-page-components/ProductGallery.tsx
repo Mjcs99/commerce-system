@@ -1,5 +1,9 @@
 export default function ProductGallery({ images }: { images: string[] }) {
-    return (
-        <div></div>
-    );
+  return (
+    <>
+      {images.map((imageUrl) => (
+        <img key={imageUrl} src={imageUrl} />
+      ))}
+    </>
+  );
 }
